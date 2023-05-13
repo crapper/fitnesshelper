@@ -1,12 +1,13 @@
-import tkinter as tk
-import numpy as np
-from tkinter import *
-from PIL import Image, ImageTk
 import cv2
+import tkinter as tk
+from tkinter import *
+import numpy as np
+from PIL import Image, ImageTk
 from datetime import datetime
-from SQLconnector import *
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
+
+from .sql_connector import *
 
 
 class StatisticPage(tk.Frame):

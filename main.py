@@ -1,16 +1,18 @@
 import tkinter as tk
 from tkinter import *
-from datetime import datetime
-from SQLconnector import *
-from StatisticPage import *
-from CameraPage import *
-from VideoPage import *
-from ConfigPage import *
-import tkcalendar as tkc
 from tkinter import filedialog as fd
-import numpy as np
 from PIL import Image, ImageTk
+from datetime import datetime
+import tkcalendar as tkc
+import numpy as np
 
+from app import *
+
+# from SQLconnector import *
+# from StatisticPage import *
+# from CameraPage import *
+# from VideoPage import *
+# from ConfigPage import *
 
 class FitnessHelper(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -150,3 +152,7 @@ class FitnessHelper(tk.Tk):
         if self.updatefun != None:
             self.after_cancel(self.updatefun)
         self.quit()
+
+if __name__ == "__main__":
+    mainwin = FitnessHelper()
+    mainwin.mainloop()

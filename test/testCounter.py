@@ -1,6 +1,7 @@
 import unittest
-from enum_activity import ActivityType
-from Counter import Counter, PushupCounter, SitupCounter, SquatCounter
+
+from script.Enum_activity import ActivityType
+from script.Counter import Counter, PushupCounter, SitupCounter, SquatCounter
 
 class CounterTest(unittest.TestCase):
     def test_pushup_counter(self):

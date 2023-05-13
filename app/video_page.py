@@ -1,13 +1,13 @@
+import cv2
 import tkinter as tk
 from tkinter import *
 import numpy as np
 from PIL import Image, ImageTk
-import cv2
-import numpy as np
-from ModelController import *
-from VideoGet import *
-from SQLconnector import *
-from Counter import *
+
+from .model_controller import *
+from .video_get import *
+from .sql_connector import *
+from .counter import *
 
 
 class VideoPage(tk.Frame):

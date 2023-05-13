@@ -2,7 +2,8 @@ import cv2
 import mediapipe as md
 import numpy as np
 import math
-from enum_activity import Activity, PointView
+
+from .types import *
 
 
 class ModelController:

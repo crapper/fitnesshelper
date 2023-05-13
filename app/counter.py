@@ -1,4 +1,4 @@
-from enum_activity import ActivityType
+from .types import *
 
 class Counter:
     def __init__(self):

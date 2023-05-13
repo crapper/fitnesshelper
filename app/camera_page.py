@@ -1,11 +1,11 @@
 from tkinter import *
 import tkinter as tk
-from Counter import *
-from VideoGet import *
-from ModelController import *
-from SQLconnector import *
 from PIL import Image, ImageTk
 
+from .counter import *
+from .video_get import *
+from .model_controller import *
+from .sql_connector import *
 
 class CameraPage(tk.Frame):
     def __init__(self, parent, controller):
