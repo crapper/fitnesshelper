@@ -1,9 +1,8 @@
 import cv2
 import tkinter as tk
-from tkinter import *
 import numpy as np
 from PIL import Image, ImageTk
-from datetime import datetime
+import datetime
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 
@@ -21,15 +20,15 @@ class StatisticPage(tk.Frame):
         blank = np.full((h, w,3), 255, np.uint8)
         self.img = Image.fromarray(blank)
         self.imgtk = ImageTk.PhotoImage(image=self.img) 
-        self.cam = parent.create_image(0,0, image=self.imgtk, anchor=NW)
+        self.cam = parent.create_image(0,0, image=self.imgtk, anchor=tk.NW)
         self.dbconnector = SQLconnector()
         self.startdate = ""
         self.enddate = ""
         self.statisticpage = []
         self.state = 0
-        self.leftbtn = Button(self.controller, text="<", command=lambda: self.changestate(-1))
+        self.leftbtn = tk.Button(self.controller, text="<", command=lambda: self.changestate(-1))
         self.leftbtn.place(x=0, y=h/2)
-        self.rightbtn = Button(self.controller, text=">", command=lambda: self.changestate(1))
+        self.rightbtn = tk.Button(self.controller, text=">", command=lambda: self.changestate(1))
         self.rightbtn.place(x=0, y=h/2+100)
         self.leftbtn.place_forget()
         self.rightbtn.place_forget()
@@ -52,8 +51,8 @@ class StatisticPage(tk.Frame):
             blank = np.full((h, w,3), 255, np.uint8)
             self.setCamImg(blank)
         else:
-            dt = datetime.strptime(self.startdate, '%d-%m-%Y').date()
-            dt2 = datetime.strptime(self.enddate, '%d-%m-%Y').date()
+            dt = datetime.datetime.strptime(self.startdate, '%d-%m-%Y').date()
+            dt2 = datetime.datetime.strptime(self.enddate, '%d-%m-%Y').date()
             if dt > dt2:
                 tk.messagebox.showinfo('Warning', 'End date must be later than start date')
                 self.startdate = ""
@@ -73,7 +72,7 @@ class StatisticPage(tk.Frame):
         dateMETlist = []
         for k in lst:
             datestring = k[1]
-            dt = datetime.strptime(datestring, '%d-%m-%Y')
+            dt = datetime.datetime.strptime(datestring, '%d-%m-%Y')
             tempfound = False
             for i in range(len(dateMETlist)):
                 if dt == dateMETlist[i][0]:
@@ -117,4 +116,4 @@ class StatisticPage(tk.Frame):
         imgnp = cv2.resize(imgnp, (w, h))
         self.img = Image.fromarray(imgnp)
         self.imgtk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
-        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=NW)
+        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=tk.NW)

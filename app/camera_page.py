@@ -1,5 +1,5 @@
-from tkinter import *
 import tkinter as tk
+import numpy as np
 from PIL import Image, ImageTk
 
 from .counter import *
@@ -18,7 +18,7 @@ class CameraPage(tk.Frame):
         blank = np.full((h, w,3), 0, np.uint8)
         self.img = Image.fromarray(blank)
         self.imgtk = ImageTk.PhotoImage(image=self.img) 
-        self.cam = parent.create_image(0,0, image=self.imgtk, anchor=NW)
+        self.cam = parent.create_image(0,0, image=self.imgtk, anchor=tk.NW)
         self.videothread = VideoGet(0, 20)
         self.active = False
         self.counterlist = [PushupCounter(), SitupCounter(), SquatCounter()]
@@ -53,7 +53,7 @@ class CameraPage(tk.Frame):
         imgnp = cv2.resize(imgnp, (w, h))
         self.img = Image.fromarray(imgnp)
         self.imgtk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
-        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=NW)
+        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=tk.NW)
 
     def videostopped(self):
         return self.videothread.stopped

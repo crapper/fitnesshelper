@@ -1,10 +1,10 @@
 import sqlite3
-from datetime import datetime
+import datetime
 import os
 
 class SQLconnector:
     def __init__(self):
-        self.date = datetime.today().strftime('%d-%m-%Y')
+        self.date = datetime.datetime.today().strftime('%d-%m-%Y')
         self.dbpath = os.path.join(os.path.realpath(__file__), r"..\Counter.db")
 
     def save(self, classname, counting, weight, time, MET):        

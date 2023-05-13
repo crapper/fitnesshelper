@@ -1,6 +1,5 @@
 import cv2
 import tkinter as tk
-from tkinter import *
 import numpy as np
 from PIL import Image, ImageTk
 
@@ -28,7 +27,7 @@ class VideoPage(tk.Frame):
         blank = np.full((int((self.BgDowny-self.BgTopy)*0.8/2), int((self.BgDownx-self.BgTopx)*0.8),3), 0, np.uint8)
         self.img = Image.fromarray(blank)
         self.imgtk = ImageTk.PhotoImage(image=self.img) 
-        self.cam = self.parent.create_image(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1),self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1), image=self.imgtk, anchor=NW)
+        self.cam = self.parent.create_image(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1),self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1), image=self.imgtk, anchor=tk.NW)
         self.panel.append(self.cam) #[2] : widget camera image
         self.panel.append(self.parent.create_rectangle(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1),
         ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) ),
@@ -47,11 +46,11 @@ class VideoPage(tk.Frame):
         self.panel.append(self.barfill) #[4] : widget progress bar fill, total 378 pixels
 
         self.counterlist = [PushupCounter(), SquatCounter(), SitupCounter()]
-        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1), ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) ), text="Pushup: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=NW)) #[5] : widget text pushup counter
-        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1) , ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) )+16+16, text="Situp: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=NW)) #[6] : widget text situp counter
-        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1) , ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) )+16+16+16+16, text="Squat: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=NW)) #[7] : widget text squat counter
+        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1), ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) ), text="Pushup: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[5] : widget text pushup counter
+        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1) , ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) )+16+16, text="Situp: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[6] : widget text situp counter
+        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1) , ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) )+16+16+16+16, text="Squat: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[7] : widget text squat counter
         self.pixel = tk.PhotoImage(width=1, height=1)
-        self.savebtn = Button(self.controller, image=self.pixel, text="Save", state='disable', width=int((self.BgDownx-self.BgTopx)*0.2), height =int((self.BgDowny-self.BgTopy)*0.1), compound='c', command=lambda: self.save())
+        self.savebtn = tk.Button(self.controller, image=self.pixel, text="Save", state='disable', width=int((self.BgDownx-self.BgTopx)*0.2), height =int((self.BgDowny-self.BgTopy)*0.1), compound='c', command=lambda: self.save())
         self.savebtn.place(x= self.BgDownx - int((self.BgDownx-self.BgTopx)*0.3), y = ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.1) )+16+16)
         self.savebtn.place_forget()
         self.date = ""
@@ -80,7 +79,7 @@ class VideoPage(tk.Frame):
         imgnp = cv2.resize(imgnp, (w, h))
         self.img = Image.fromarray(imgnp)
         self.imgtk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
-        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=NW)
+        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=tk.NW)
 
     def updatecount(self):
         self.parent.itemconfig(self.panel[5], text="Pushup: "+str(self.counterlist[Activity.pushup].get_count()))

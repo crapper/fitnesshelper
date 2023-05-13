@@ -1,6 +1,6 @@
 import cv2
 import time
-from threading import Thread
+import threading
 
 class VideoGet:
     def __init__(self, src, fps = 30):
@@ -24,7 +24,7 @@ class VideoGet:
     def start(self):    
         self.stopped = False
         # print(self.src)
-        self.thread = Thread(target=self.get, daemon = True)
+        self.thread = threading.Thread(target=self.get, daemon = True)
         self.thread.start()
         # self.thread.join()
         return self

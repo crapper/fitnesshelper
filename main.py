@@ -1,18 +1,12 @@
 import tkinter as tk
-from tkinter import *
-from tkinter import filedialog as fd
-from PIL import Image, ImageTk
-from datetime import datetime
 import tkcalendar as tkc
+import tkinter.messagebox as messagebox
+from PIL import Image, ImageTk
+import datetime
 import numpy as np
 
 from app import *
 
-# from SQLconnector import *
-# from StatisticPage import *
-# from CameraPage import *
-# from VideoPage import *
-# from ConfigPage import *
 
 class FitnessHelper(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -26,7 +20,7 @@ class FitnessHelper(tk.Tk):
         self.width = 1280
         self.height = 720
         self.weight = -1 # weight for calories calculation
-        self.c = Canvas(self, width=self.width, height=self.height, bg = 'blue')
+        self.c = tk.Canvas(self, width=self.width, height=self.height, bg = 'blue')
         self.c.pack()
         self.expectframe = 20
         self.tempdate = ""
@@ -47,16 +41,16 @@ class FitnessHelper(tk.Tk):
         blank = np.full((h, w,3), 80, np.uint8)
         self.img = Image.fromarray(blank)
         self.imgtk = ImageTk.PhotoImage(image=self.img) 
-        self.bar = self.c.create_image(self.startx,0, image=self.imgtk, anchor=NW)
+        self.bar = self.c.create_image(self.startx,0, image=self.imgtk, anchor=tk.NW)
         buttonlen = 64
-        self.pixel = PhotoImage(width=1, height=1)
-        self.btn1 = Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchCameraPage(), state=NORMAL)
+        self.pixel = tk.PhotoImage(width=1, height=1)
+        self.btn1 = tk.Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchCameraPage(), state=tk.NORMAL)
         self.btn1.place(x= self.startx+buttonlen/2, y=buttonlen)
-        self.btn2 = Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchVideoPage(), state=NORMAL)
+        self.btn2 = tk.Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchVideoPage(), state=tk.NORMAL)
         self.btn2.place(x= self.startx+buttonlen/2, y=buttonlen*3)
-        self.btn3 = Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchConfigPage(), state=NORMAL)
+        self.btn3 = tk.Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchConfigPage(), state=tk.NORMAL)
         self.btn3.place(x= self.startx+buttonlen/2, y=buttonlen*5)
-        self.btn4 = Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchStatisticPage(), state=NORMAL)
+        self.btn4 = tk.Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchStatisticPage(), state=tk.NORMAL)
         self.btn4.place(x= self.startx+buttonlen/2, y=buttonlen*7)
 
         self.update_frame()
@@ -72,15 +66,15 @@ class FitnessHelper(tk.Tk):
         date_win.destroy()
 
     def pick_date(self, title="Pick Date"):
-        date_win = Toplevel(self)
+        date_win = tk.Toplevel(self)
         date_win.grab_set()
         date_win.title(title)
-        year = int(datetime.today().strftime('%Y'))
-        month = int(datetime.today().strftime('%m'))
-        day = int(datetime.today().strftime('%d'))
+        year = int(datetime.datetime.today().strftime('%Y'))
+        month = int(datetime.datetime.today().strftime('%m'))
+        day = int(datetime.datetime.today().strftime('%d'))
         cal = tkc.Calendar(date_win, selectmode="day", year=year, month=month, day=day, date_pattern='dd-MM-yyyy')
         cal.pack(pady=20)
-        ok_button = Button(date_win, text="OK", command=lambda: self.updatevideodate(date_win, cal))
+        ok_button = tk.Button(date_win, text="OK", command=lambda: self.updatevideodate(date_win, cal))
         ok_button.pack(pady=20)
         date_win.wait_window()
 
@@ -92,7 +86,7 @@ class FitnessHelper(tk.Tk):
             if self.frames[2].active == True:
                 self.frames[2].movetop()
         else:
-            tk.messagebox.showinfo('Warning', 'Please enter your weight in the config page')
+            messagebox.showinfo('Warning', 'Please enter your weight in the config page')
 
     def switchVideoPage(self):
         if self.weight != -1:
@@ -103,7 +97,7 @@ class FitnessHelper(tk.Tk):
             if self.frames[2].active == False:
                 list_disable = [0, 3]
                 self.disabler(list_disable)
-                filename = fd.askopenfilename(title='Open a file',filetypes=filetypes)
+                filename = tk.filedialog.askopenfilename(title='Open a file',filetypes=filetypes)
                 if filename != '':
                     self.pick_date("Pick Date for Video")
                     self.frames[2].date = self.tempdate
@@ -113,7 +107,7 @@ class FitnessHelper(tk.Tk):
             else:
                 self.frames[2].disableswitch()
         else:
-            tk.messagebox.showinfo('Warning', 'Please enter your weight in the config page')
+            messagebox.showinfo('Warning', 'Please enter your weight in the config page')
 
     def switchStatisticPage(self):
         anyotheractive = False

@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import *
 import tkinter.font as tkFont
 
 class ConfigPage(tk.Frame):
@@ -15,16 +14,16 @@ class ConfigPage(tk.Frame):
         self.shapetripointer={'bounds': [1152, 352, self.BgDownx, 320, self.BgDownx, 384], 'kind': 'tri', 'fill': True}
         self.panel.append(self.parent.create_polygon(list(self.shapetripointer.values())[0],fill='white',outline='blue', width = 5)) #[0] : widget background panel triangle
         self.panel.append(self.parent.create_rectangle(self.BgTopx, self.BgTopy,self.BgDownx,self.BgDowny,fill='white',outline='blue', width = 5)) #[1] : widget background panel rectangle
-        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1), self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1), text="Weight: ", font=("Helvetica", 16), fill="black", anchor=NW)) 
+        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1), self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1), text="Weight: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         vcmd = (self.register(self.validate_entry))
         size = tkFont.Font(size=16, family='Helvetica').measure('Weight: ')
 
-        self.weightentry = Entry(self.controller, validate='all', validatecommand=(vcmd, '%P'))
+        self.weightentry = tk.Entry(self.controller, validate='all', validatecommand=(vcmd, '%P'))
         self.weightentry.place(x= self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1) + size, y = self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1))
         self.weightentry.place_forget()
 
         self.pixel = tk.PhotoImage(width=1, height=1)
-        self.savebtn = Button(self.controller, image=self.pixel, text="Save", state='normal', width=int((self.BgDownx-self.BgTopx)*0.2), height =int((self.BgDowny-self.BgTopy)*0.1), compound='c', command=lambda: self.save(int(self.weightentry.get())))
+        self.savebtn = tk.Button(self.controller, image=self.pixel, text="Save", state='normal', width=int((self.BgDownx-self.BgTopx)*0.2), height =int((self.BgDowny-self.BgTopy)*0.1), compound='c', command=lambda: self.save(int(self.weightentry.get())))
         self.savebtn.place(x= self.BgDownx - int((self.BgDownx-self.BgTopx)*0.3), y = ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.1) )+16+16)
         self.savebtn.place_forget()
         self.active = False
