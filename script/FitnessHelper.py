@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import *
 from datetime import datetime
 from SQLconnector import *
-from BarPage import *
 from StatisticPage import *
 from CameraPage import *
 from VideoPage import *
