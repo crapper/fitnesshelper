@@ -9,6 +9,8 @@ from VideoPage import *
 from ConfigPage import *
 import tkcalendar as tkc
 from tkinter import filedialog as fd
+import numpy as np
+from PIL import Image, ImageTk
 
 
 class FitnessHelper(tk.Tk):
@@ -30,12 +32,32 @@ class FitnessHelper(tk.Tk):
         self.updatefun = None
 
         # Create a dictionary of frames
-        self.bar = BarPage(self.c, self)
+        # self.bar = BarPage(self.c, self)
         self.frames = []
         self.frames.append(StatisticPage(self.c, self))
         self.frames.append(CameraPage(self.c, self))
         self.frames.append(VideoPage(self.c, self))
         self.frames.append(ConfigPage(self.c, self))
+
+        # create the bar with buttons
+        self.startx = int(self.width * 0.9)
+        w = int(self.width * 0.1)
+        h = self.height
+        blank = np.full((h, w,3), 80, np.uint8)
+        self.img = Image.fromarray(blank)
+        self.imgtk = ImageTk.PhotoImage(image=self.img) 
+        self.bar = self.c.create_image(self.startx,0, image=self.imgtk, anchor=NW)
+        buttonlen = 64
+        self.pixel = PhotoImage(width=1, height=1)
+        self.btn1 = Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchCameraPage(), state=NORMAL)
+        self.btn1.place(x= self.startx+buttonlen/2, y=buttonlen)
+        self.btn2 = Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchVideoPage(), state=NORMAL)
+        self.btn2.place(x= self.startx+buttonlen/2, y=buttonlen*3)
+        self.btn3 = Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchConfigPage(), state=NORMAL)
+        self.btn3.place(x= self.startx+buttonlen/2, y=buttonlen*5)
+        self.btn4 = Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchStatisticPage(), state=NORMAL)
+        self.btn4.place(x= self.startx+buttonlen/2, y=buttonlen*7)
+
         self.update_frame()
         self.protocol("WM_DELETE_WINDOW", self.whendead)
 
