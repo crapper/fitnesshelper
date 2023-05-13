@@ -28,10 +28,10 @@ class Counter:
                 self.tempcount_time = temp
                 self.state = ActivityType.DOWN
 
-    def isDown(self):
+    def isDown(self, angle):
         pass
 
-    def isUp(self):
+    def isUp(self, angle):
         pass
 
     def get_count(self):
