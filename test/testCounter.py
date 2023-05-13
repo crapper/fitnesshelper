@@ -1,7 +1,10 @@
+import sys
+sys.path.insert(1, './')
+#
 import unittest
 
-from script.Enum_activity import ActivityType
-from script.Counter import Counter, PushupCounter, SitupCounter, SquatCounter
+from app import *
+
 
 class CounterTest(unittest.TestCase):
     def test_pushup_counter(self):

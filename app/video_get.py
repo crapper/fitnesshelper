@@ -18,8 +18,8 @@ class VideoGet:
         self.currentframe = 0
         self.finished = False
         if self.src != 0:
-            self.totalframe = int(self.stream.get(cv2.CAP_PROP_FRAME_COUNT)) 
-            self.fpsvideo = self.stream.get(cv2.CAP_PROP_FPS)
+            self.total_frame = int(self.stream.get(cv2.CAP_PROP_FRAME_COUNT)) 
+            self.fps_video = self.stream.get(cv2.CAP_PROP_FPS)
 
     def start(self):    
         self.stopped = False
@@ -31,8 +31,8 @@ class VideoGet:
 
     def get(self):
         while not self.stopped and not self.finished:
-            starttime = time.time()
-            if (self.src != 0 and self.currentframe == self.totalframe):
+            start_time = time.time()
+            if (self.src != 0 and self.currentframe == self.total_frame):
                 self.finished = True
             elif len(self.grabbed) < 30 and self.src != 0:
                 (grabbed, frame) = self.stream.read()
@@ -44,7 +44,7 @@ class VideoGet:
                 self.grabbed[0] = grabbed
                 self.frame[0] = frame
                 self.currentframe += 1
-            time.sleep(float(1/self.fps - (time.time() - starttime)))
+            time.sleep(float(1/self.fps - (time.time() - start_time)))
 
     def stop(self):
         self.stopped = True
@@ -54,6 +54,6 @@ class VideoGet:
         if self.stopped == False:
             self.stopped = True
             self.thread.join()
-        # relase stream
+        # release stream
         if self.stream.isOpened():
             self.stream.release()

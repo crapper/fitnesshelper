@@ -2,30 +2,30 @@ from .types import *
 
 class Counter:
     def __init__(self):
-        self.peakvalleycount = 0
+        self.peak_valley_count = 0
         self.state = ActivityType.NA
-        self.tempcount_time = 0
-        self.totaltime = 0
+        self.temp_count_time = 0
+        self.total_time = 0
 
     def update_count(self, angle, temp):
         if angle >=0:
             if self.isDown(angle) and self.state == ActivityType.NA:
                 self.state = ActivityType.DOWN
-                self.tempcount_time = temp
+                self.temp_count_time = temp
             elif self.isUp(angle) and self.state == ActivityType.NA:
                 self.state = ActivityType.UP
-                self.tempcount_time = temp
+                self.temp_count_time = temp
             elif self.state == ActivityType.DOWN and self.isUp(angle):
                 # self.play_sound()
-                self.peakvalleycount += 1
-                self.totaltime += temp - self.tempcount_time
-                self.tempcount_time = temp
+                self.peak_valley_count += 1
+                self.total_time += temp - self.temp_count_time
+                self.temp_count_time = temp
                 self.state = ActivityType.UP
             elif self.state == ActivityType.UP and self.isDown(angle):
                 # self.play_sound()
-                self.peakvalleycount += 1
-                self.totaltime += temp - self.tempcount_time
-                self.tempcount_time = temp
+                self.peak_valley_count += 1
+                self.total_time += temp - self.temp_count_time
+                self.temp_count_time = temp
                 self.state = ActivityType.DOWN
 
     def isDown(self, angle):
@@ -35,7 +35,7 @@ class Counter:
         pass
 
     def get_count(self):
-        return int(self.peakvalleycount/2)
+        return int(self.peak_valley_count/2)
 
 class PushupCounter(Counter):
     def __init__(self):

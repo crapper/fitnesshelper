@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-from CameraPage import CameraPage
+from app import *
 
 class TestCameraPage(unittest.TestCase):
 
@@ -13,16 +13,16 @@ class TestCameraPage(unittest.TestCase):
         self.controller.weight = 70
         self.camera_page = CameraPage(self.app, self.controller)
 
-    def test_disableswitch(self):
-        # Test that active is set to False and counters are reset when disableswitch is called while active is True
+    def test_disable_switch(self):
+        # Test that active is set to False and counters are reset when disable_switch is called while active is True
         self.camera_page.active = True
-        self.camera_page.counterlist[0].update_count(10, 100) # Add some counts to the PushupCounter
-        self.camera_page.disableswitch()
+        self.camera_page.counter_list[0].update_count(10, 100) # Add some counts to the PushupCounter
+        self.camera_page.disable_switch()
         self.assertFalse(self.camera_page.active)
-        self.assertEqual(self.camera_page.counterlist[0].get_count(), 0)
+        self.assertEqual(self.camera_page.counter_list[0].get_count(), 0)
 
-        # Test that active is set to True when disableswitch is called while active is False
-        self.camera_page.disableswitch()
+        # Test that active is set to True when disable_switch is called while active is False
+        self.camera_page.disable_switch()
         self.assertTrue(self.camera_page.active)
 
     def test_most_frequent(self):
@@ -37,7 +37,7 @@ class TestCameraPage(unittest.TestCase):
         self.assertIn(result, [3, 4])
 
     def tearDown(self):
-        self.camera_page.stopvid() # Stop the video thread
+        self.camera_page.stop_vid() # Stop the video thread
 
 if __name__ == '__main__':
     unittest.main()

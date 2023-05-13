@@ -1,5 +1,5 @@
 import unittest
-from ...script.VideoGet import VideoGet
+from app import *
 
 class TestVideoGet(unittest.TestCase):
     def setUp(self):

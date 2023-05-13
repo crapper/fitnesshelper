@@ -19,87 +19,86 @@ class StatisticPage(tk.Frame):
         h = self.controller.height
         blank = np.full((h, w,3), 255, np.uint8)
         self.img = Image.fromarray(blank)
-        self.imgtk = ImageTk.PhotoImage(image=self.img) 
-        self.cam = parent.create_image(0,0, image=self.imgtk, anchor=tk.NW)
-        self.dbconnector = SQLconnector()
-        self.startdate = ""
-        self.enddate = ""
-        self.statisticpage = []
+        self.img_tk = ImageTk.PhotoImage(image=self.img) 
+        self.cam = parent.create_image(0,0, image=self.img_tk, anchor=tk.NW)
+        self.db_connector = SQLconnector()
+        self.start_date = ""
+        self.end_date = ""
+        self.plot_graph_list = []
         self.state = 0
-        self.leftbtn = tk.Button(self.controller, text="<", command=lambda: self.changestate(-1))
-        self.leftbtn.place(x=0, y=h/2)
-        self.rightbtn = tk.Button(self.controller, text=">", command=lambda: self.changestate(1))
-        self.rightbtn.place(x=0, y=h/2+100)
-        self.leftbtn.place_forget()
-        self.rightbtn.place_forget()
+        self.left_btn = tk.Button(self.controller, text="<", command=lambda: self.change_state(-1))
+        self.left_btn.place(x=0, y=h/2)
+        self.right_btn = tk.Button(self.controller, text=">", command=lambda: self.change_state(1))
+        self.right_btn.place(x=0, y=h/2+100)
+        self.left_btn.place_forget()
+        self.right_btn.place_forget()
         
-    def changestate(self, state):
+    def change_state(self, state):
         self.state = (self.state + state) % 4
-        self.setCamImg(self.statisticpage[self.state])
+        self.setCamImg(self.plot_graph_list[self.state])
 
-    def disableswitch(self):
+    def disable_switch(self):
         if self.active == True:
             self.active = False
-            self.startdate = ""
-            self.enddate = ""
+            self.start_date = ""
+            self.end_date = ""
             self.state = 0
-            self.statisticpage = []
-            self.leftbtn.place_forget()
-            self.rightbtn.place_forget()
+            self.plot_graph_list = []
+            self.left_btn.place_forget()
+            self.right_btn.place_forget()
             w = int(self.controller.width * 0.9)
             h = self.controller.height
             blank = np.full((h, w,3), 255, np.uint8)
             self.setCamImg(blank)
         else:
-            dt = datetime.datetime.strptime(self.startdate, '%d-%m-%Y').date()
-            dt2 = datetime.datetime.strptime(self.enddate, '%d-%m-%Y').date()
+            dt = datetime.datetime.strptime(self.start_date, '%d-%m-%Y').date()
+            dt2 = datetime.datetime.strptime(self.end_date, '%d-%m-%Y').date()
             if dt > dt2:
                 tk.messagebox.showinfo('Warning', 'End date must be later than start date')
-                self.startdate = ""
-                self.enddate = ""
+                self.start_date = ""
+                self.end_date = ""
             else:
-                self.leftbtn.place(x=0, y=self.controller.height/2)
-                self.rightbtn.place(x=0, y=self.controller.height/2+100)
+                self.left_btn.place(x=0, y=self.controller.height/2)
+                self.right_btn.place(x=0, y=self.controller.height/2+100)
                 self.active = True
                 self.parent.tag_raise(self.cam, 'all')
-                self.statisticpage.append(self.listtoimg(self.dbconnector.extractcalorieslist(self.startdate, self.enddate), "Calories Trend for all activities"))
-                self.statisticpage.append(self.listtoimg(self.dbconnector.extractcalorieslist(self.startdate, self.enddate, "pushup"), "Calories Trend for pushup"))
-                self.statisticpage.append(self.listtoimg(self.dbconnector.extractcalorieslist(self.startdate, self.enddate, "situp"), "Calories Trend for situp"))
-                self.statisticpage.append(self.listtoimg(self.dbconnector.extractcalorieslist(self.startdate, self.enddate, "squat"), "Calories Trend for squat"))
-                self.setCamImg(self.statisticpage[self.state])
+                self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date), "Calories Trend for all activities"))
+                self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "pushup"), "Calories Trend for pushup"))
+                self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "situp"), "Calories Trend for situp"))
+                self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "squat"), "Calories Trend for squat"))
+                self.setCamImg(self.plot_graph_list[self.state])
                 
-    def listtoimg(self, lst, title="Calories Trend"):
+    def list_to_img(self, lst, title="Calories Trend"):
         dateMETlist = []
         for k in lst:
-            datestring = k[1]
-            dt = datetime.datetime.strptime(datestring, '%d-%m-%Y')
-            tempfound = False
+            date_string = k[1]
+            dt = datetime.datetime.strptime(date_string, '%d-%m-%Y')
+            temp_found = False
             for i in range(len(dateMETlist)):
                 if dt == dateMETlist[i][0]:
                     dateMETlist[i][1] += k[5]
-                    tempfound = True
+                    temp_found = True
                     break
-            if tempfound == False:
+            if temp_found == False:
                 dateMETlist.append([dt, k[5]])
 
         dateMETlist.sort(key=lambda x: x[0])
-        datelist = []
+        date_list = []
         METlist = []
 
         for i in dateMETlist:
-            datelist.append(i[0])
+            date_list.append(i[0])
             METlist.append(i[1])
         fig, ax = plt.subplots()
-        ax.plot(datelist,METlist, marker="o",markersize=10, markeredgecolor="red", markerfacecolor="green")
+        ax.plot(date_list,METlist, marker="o",markersize=10, markeredgecolor="red", markerfacecolor="green")
         plt.grid()
         plt.ylabel("Calories spent")
         plt.xlabel("Date")
         plt.title(title)
         myFmt = DateFormatter("%Y-%m-%d")
         ax.xaxis.set_major_formatter(myFmt)
-        plt.xticks(datelist)
+        plt.xticks(date_list)
         fig.autofmt_xdate()
-        # plt.savefig(r"C:\Users\DanielFung\Desktop\fyp\py\fyp\test.jpg")
         fig.canvas.draw()
         plt.clf()
         img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
@@ -110,10 +109,10 @@ class StatisticPage(tk.Frame):
         img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
         return img
 
-    def setCamImg(self, imgnp):
+    def setCamImg(self, img_np):
         w = int(self.controller.width * 0.9)
         h = self.controller.height
-        imgnp = cv2.resize(imgnp, (w, h))
-        self.img = Image.fromarray(imgnp)
-        self.imgtk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
-        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=tk.NW)
+        img_np = cv2.resize(img_np, (w, h))
+        self.img = Image.fromarray(img_np)
+        self.img_tk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
+        self.parent.itemconfig(self.cam, image=self.img_tk, anchor=tk.NW)

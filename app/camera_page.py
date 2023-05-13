@@ -17,52 +17,52 @@ class CameraPage(tk.Frame):
         h = self.controller.height
         blank = np.full((h, w,3), 0, np.uint8)
         self.img = Image.fromarray(blank)
-        self.imgtk = ImageTk.PhotoImage(image=self.img) 
-        self.cam = parent.create_image(0,0, image=self.imgtk, anchor=tk.NW)
-        self.videothread = VideoGet(0, 20)
+        self.img_tk = ImageTk.PhotoImage(image=self.img) 
+        self.cam = parent.create_image(0,0, image=self.img_tk, anchor=tk.NW)
+        self.video_thread = VideoGet(0, 20)
         self.active = False
-        self.counterlist = [PushupCounter(), SitupCounter(), SquatCounter()]
-        self.dbconnector = SQLconnector()
-        self.counterlist[0].peakvalleycount = 10
-        self.counterlist[0].totaltime = 100
-        self.offsetnonframe = []
+        self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
+        self.db_connector = SQLconnector()
+        self.counter_list[0].peak_valley_count = 10
+        self.counter_list[0].total_time = 100
+        self.offset_non_frame = []
 
-    def disableswitch(self):
+    def disable_switch(self):
         if self.active == True:
-            if self.videothread.stopped == False:
-                self.stopvid()
+            if self.video_thread.stopped == False:
+                self.stop_vid()
             # self.parent.itemconfig(self.cam, state='hidden')
             msg_box = tk.messagebox.askquestion('Warning', 'Are you save the counting to the database?(all progress will lost if no is selected)',icon='warning')
             if msg_box == 'yes':
-                for p in range(len(self.counterlist)):
-                    if self.counterlist[p].get_count() > 0:
-                        MET = 3.8 * 3.5 * self.controller.weight / 200 * self.counterlist[p].totaltime / 60
-                        self.dbconnector.save(self.counterlist[p].classname, self.counterlist[p].get_count(), self.controller.weight, self.counterlist[p].totaltime, MET)
+                for p in range(len(self.counter_list)):
+                    if self.counter_list[p].get_count() > 0:
+                        MET = 3.8 * 3.5 * self.controller.weight / 200 * self.counter_list[p].total_time / 60
+                        self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time, MET)
             self.active = False
-            self.counterlist = [PushupCounter(), SitupCounter(), SquatCounter()]
+            self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
             self.model.model.reset()
         else:
-            if self.videothread.stopped == True:
-                self.startvid()
+            if self.video_thread.stopped == True:
+                self.start_vid()
             self.parent.tag_raise(self.cam, 'all')
             self.active = True
 
-    def setCamImg(self, imgnp):
+    def setCamImg(self, img_np):
         w = int(self.controller.width * 0.9)
         h = self.controller.height
-        imgnp = cv2.resize(imgnp, (w, h))
-        self.img = Image.fromarray(imgnp)
-        self.imgtk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
-        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=tk.NW)
+        img_np = cv2.resize(img_np, (w, h))
+        self.img = Image.fromarray(img_np)
+        self.img_tk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
+        self.parent.itemconfig(self.cam, image=self.img_tk, anchor=tk.NW)
 
-    def videostopped(self):
-        return self.videothread.stopped
+    def video_stopped(self):
+        return self.video_thread.stopped
 
-    def startvid(self):
-        self.videothread.start()
+    def start_vid(self):
+        self.video_thread.start()
 
-    def stopvid(self):
-        self.videothread.stop()
+    def stop_vid(self):
+        self.video_thread.stop()
         w = int(self.controller.width * 0.9)
         h = self.controller.height
         blank = np.full((h, w,3), 0, np.uint8)
@@ -72,25 +72,25 @@ class CameraPage(tk.Frame):
         return max(set(List), key = List.count)
 
     def update_frame(self):
-        if self.videothread.stopped == False:
-            if len(self.videothread.grabbed) > 0:
-                ret, frame = self.videothread.grabbed[0], self.videothread.frame[0]
+        if self.video_thread.stopped == False:
+            if len(self.video_thread.grabbed) > 0:
+                ret, frame = self.video_thread.grabbed[0], self.video_thread.frame[0]
                 if ret:
                     img = self.model.detect(frame)
                     if self.model.prediction != Activity.non:
-                        self.counterlist[self.model.prediction].update_count(self.model.angleforcount, time.time())
-                    self.offsetnonframe.append(self.model.prediction)
-                    if len(self.offsetnonframe) >= 10:
-                        maxappear = self.most_frequent(self.offsetnonframe)
-                        setlist = list(set(self.offsetnonframe))
-                        setlist.remove(maxappear)
+                        self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, time.time())
+                    self.offset_non_frame.append(self.model.prediction)
+                    if len(self.offset_non_frame) >= 10:
+                        max_appear = self.most_frequent(self.offset_non_frame)
+                        setlist = list(set(self.offset_non_frame))
+                        setlist.remove(max_appear)
                         for i in setlist:
                             if i != Activity.non:
-                                self.counterlist[i].state = ActivityType.NA
-                                if self.counterlist[i].peakvalleycount % 2 == 1:
-                                    self.counterlist[i].peakvalleycount -= 1
-                                self.counterlist[i].tempcount_time = 0
-                    text = "Pushup: " + str(self.counterlist[0].get_count()) + " Situp: " + str(self.counterlist[1].get_count()) + " Squat: " + str(self.counterlist[2].get_count())
+                                self.counter_list[i].state = ActivityType.NA
+                                if self.counter_list[i].peak_valley_count % 2 == 1:
+                                    self.counter_list[i].peak_valley_count -= 1
+                                self.counter_list[i].temp_count_time = 0
+                    text = "Pushup: " + str(self.counter_list[0].get_count()) + " Situp: " + str(self.counter_list[1].get_count()) + " Squat: " + str(self.counter_list[2].get_count())
                     cv2.putText(img, text, (10, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0,0,255), 2)
                     self.setCamImg(img)
         else:

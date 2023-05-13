@@ -16,159 +16,161 @@ class VideoPage(tk.Frame):
         self.controller = controller
         self.model = ModelController()
         self.panel = []
-        self.BgTopx = 688
-        self.BgTopy = 188
-        self.BgDownx = 1088
-        self.BgDowny = 488
-        self.shapetripointer={'bounds': [1152, 224, self.BgDownx, 192, self.BgDownx, 256], 'kind': 'tri', 'fill': True}
-        self.panel.append(self.parent.create_polygon(list(self.shapetripointer.values())[0],fill='white',outline='green', width = 5))#[0] : widget background panel triangle
-        self.panel.append(self.parent.create_rectangle(self.BgTopx, self.BgTopy,self.BgDownx,self.BgDowny,fill='white',outline='green', width = 5)) #[1] : widget background panel rectangle
-        self.dbconnector = SQLconnector()
-        blank = np.full((int((self.BgDowny-self.BgTopy)*0.8/2), int((self.BgDownx-self.BgTopx)*0.8),3), 0, np.uint8)
+        self.BgTop_x = 688
+        self.BgTop_y = 188
+        self.BgDown_x = 1088
+        self.BgDown_y = 488
+        self.shape_tri_pointer={'bounds': [1152, 224, self.BgDown_x, 192, self.BgDown_x, 256], 'kind': 'tri', 'fill': True}
+        self.panel.append(self.parent.create_polygon(list(self.shape_tri_pointer.values())[0],fill='white',outline='green', width = 5))#[0] : widget background panel triangle
+        self.panel.append(self.parent.create_rectangle(self.BgTop_x, self.BgTop_y,self.BgDown_x,self.BgDown_y,fill='white',outline='green', width = 5)) #[1] : widget background panel rectangle
+        self.db_connector = SQLconnector()
+        blank = np.full((int((self.BgDown_y-self.BgTop_y)*0.8/2), int((self.BgDown_x-self.BgTop_x)*0.8),3), 0, np.uint8)
         self.img = Image.fromarray(blank)
-        self.imgtk = ImageTk.PhotoImage(image=self.img) 
-        self.cam = self.parent.create_image(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1),self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1), image=self.imgtk, anchor=tk.NW)
+        self.img_tk = ImageTk.PhotoImage(image=self.img) 
+        self.cam = self.parent.create_image(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1),self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1), image=self.img_tk, anchor=tk.NW)
         self.panel.append(self.cam) #[2] : widget camera image
-        self.panel.append(self.parent.create_rectangle(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1),
-        ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) ),
-        self.BgDownx-int((self.BgDownx-self.BgTopx)*0.1),
-        ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) ),
+        self.panel.append(self.parent.create_rectangle(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1),
+        ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) ),
+        self.BgDown_x-int((self.BgDown_x-self.BgTop_x)*0.1),
+        ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05) ),
         fill='gray',outline='black')) #[3] : widget progress bar border
 
-        self.barfill = self.parent.create_rectangle( self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1)+1,
-         ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) ) +1,
-          self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1)-1,
-          ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05)),
-          fill='green') #final x = self.BgDownx-11
+        self.bar_fill = self.parent.create_rectangle( self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1)+1,
+         ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) ) +1,
+          self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1)-1,
+          ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05)),
+          fill='green') #final x = self.BgDown_x-11
 
-        self.total = int((self.BgDownx-self.BgTopx)*0.8)-2
-        self.initialx = self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1)+1
-        self.panel.append(self.barfill) #[4] : widget progress bar fill, total 378 pixels
+        self.total = int((self.BgDown_x-self.BgTop_x)*0.8)-2
+        self.initial_x = self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1)+1
+        self.panel.append(self.bar_fill) #[4] : widget progress bar fill, total 378 pixels
 
-        self.counterlist = [PushupCounter(), SquatCounter(), SitupCounter()]
-        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1), ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) ), text="Pushup: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[5] : widget text pushup counter
-        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1) , ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) )+16+16, text="Situp: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[6] : widget text situp counter
-        self.panel.append(self.parent.create_text(self.BgTopx+int((self.BgDownx-self.BgTopx)*0.1) , ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.05) )+16+16+16+16, text="Squat: "+str(self.counterlist[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[7] : widget text squat counter
+        self.counter_list = [PushupCounter(), SquatCounter(), SitupCounter()]
+        self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05) ), text="Pushup: "+str(self.counter_list[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[5] : widget text pushup counter
+        self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) , ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05) )+16+16, text="Situp: "+str(self.counter_list[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[6] : widget text situp counter
+        self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) , ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05) )+16+16+16+16, text="Squat: "+str(self.counter_list[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[7] : widget text squat counter
         self.pixel = tk.PhotoImage(width=1, height=1)
-        self.savebtn = tk.Button(self.controller, image=self.pixel, text="Save", state='disable', width=int((self.BgDownx-self.BgTopx)*0.2), height =int((self.BgDowny-self.BgTopy)*0.1), compound='c', command=lambda: self.save())
-        self.savebtn.place(x= self.BgDownx - int((self.BgDownx-self.BgTopx)*0.3), y = ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.1) )+16+16)
-        self.savebtn.place_forget()
+        self.save_btn = tk.Button(self.controller, image=self.pixel, text="Save", state='disable', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save())
+        self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
+        self.save_btn.place_forget()
         self.date = ""
         self.active = False
-        self.videothread = None
-        self.frameread = 0
-        self.offsetnonframe = []
+        self.video_thread = None
+        self.frame_read = 0
+        self.offset_non_frame = []
         for item in self.panel:
             self.parent.itemconfig(item, state='hidden')
+
     def save(self):
-        for p in range(len(self.counterlist)):
-            if self.counterlist[p].get_count() > 0:
-                MET = 3.8 * 3.5 * self.controller.weight / 200 * (self.counterlist[p].totaltime/self.videothread.fpsvideo/ 60)
-                self.dbconnector.save(self.counterlist[p].classname, self.counterlist[p].get_count(), self.controller.weight, self.counterlist[p].totaltime/self.videothread.fpsvideo, MET)
-        self.stopvid()
+        for p in range(len(self.counter_list)):
+            if self.counter_list[p].get_count() > 0:
+                MET = 3.8 * 3.5 * self.controller.weight / 200 * (self.counter_list[p].total_time/self.video_thread.fps_video/ 60)
+                self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time/self.video_thread.fps_video, MET)
+        self.stop_vid()
         self.initialize()
 
-    def videostopped(self):
-        if self.videothread != None:
-            return self.videothread.stopped
+    def video_stopped(self):
+        if self.video_thread != None:
+            return self.video_thread.stopped
         else:
             return True
-    def setCamImg(self, imgnp):
-        w = int((self.BgDownx-self.BgTopx)*0.8)
-        h = int((self.BgDowny-self.BgTopy)*0.8/2)
-        imgnp = cv2.resize(imgnp, (w, h))
-        self.img = Image.fromarray(imgnp)
-        self.imgtk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
-        self.parent.itemconfig(self.cam, image=self.imgtk, anchor=tk.NW)
+    def setCamImg(self, img_np):
+        w = int((self.BgDown_x-self.BgTop_x)*0.8)
+        h = int((self.BgDown_y-self.BgTop_y)*0.8/2)
+        img_np = cv2.resize(img_np, (w, h))
+        self.img = Image.fromarray(img_np)
+        self.img_tk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
+        self.parent.itemconfig(self.cam, image=self.img_tk, anchor=tk.NW)
 
-    def updatecount(self):
-        self.parent.itemconfig(self.panel[5], text="Pushup: "+str(self.counterlist[Activity.pushup].get_count()))
-        self.parent.itemconfig(self.panel[6], text="Situp: "+str(self.counterlist[Activity.situp].get_count()))
-        self.parent.itemconfig(self.panel[7], text="Squat: "+str(self.counterlist[Activity.squat].get_count()))
+    def update_count(self):
+        self.parent.itemconfig(self.panel[5], text="Pushup: "+str(self.counter_list[Activity.pushup].get_count()))
+        self.parent.itemconfig(self.panel[6], text="Situp: "+str(self.counter_list[Activity.situp].get_count()))
+        self.parent.itemconfig(self.panel[7], text="Squat: "+str(self.counter_list[Activity.squat].get_count()))
 
-    def startvid(self, source):
-        if self.videothread != None:
-            self.videothread.start()
+    def start_vid(self, source):
+        if self.video_thread != None:
+            self.video_thread.start()
         else:
-            self.videothread = VideoGet(source, 15)
-            self.videothread.start()
+            self.video_thread = VideoGet(source, 15)
+            self.video_thread.start()
 
-    def stopvid(self):
-        if self.videothread != None:
-            self.videothread.stop()
-        w = int((self.BgDownx-self.BgTopx)*0.8)
-        h = int((self.BgDowny-self.BgTopy)*0.8/2)
+    def stop_vid(self):
+        if self.video_thread != None:
+            self.video_thread.stop()
+        w = int((self.BgDown_x-self.BgTop_x)*0.8)
+        h = int((self.BgDown_y-self.BgTop_y)*0.8/2)
         blank = np.full((h, w,3), 0, np.uint8)
         self.setCamImg(blank)
     
     def initialize(self):
         self.date = ""
-        self.savebtn["state"] = "disable"
-        self.savebtn.place_forget()
-        self.counterlist = [PushupCounter(), SitupCounter(), SquatCounter()]
-        self.dbconnector = SQLconnector()
-        if self.videothread!= None:
-            self.videothread = None
-        self.frameread = 0
-        x0, y0, x1, y1 = self.parent.coords(self.barfill)
-        self.parent.coords(self.barfill, self.initialx, y0, self.initialx, y1)
+        self.save_btn["state"] = "disable"
+        self.save_btn.place_forget()
+        self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
+        self.db_connector = SQLconnector()
+        if self.video_thread!= None:
+            self.video_thread = None
+        self.frame_read = 0
+        x0, y0, x1, y1 = self.parent.coords(self.bar_fill)
+        self.parent.coords(self.bar_fill, self.initial_x, y0, self.initial_x, y1)
         for item in self.panel:
             self.parent.itemconfig(item, state='hidden')
         self.active = False
         self.model.model.reset()
 
-    def disableswitch(self):
+    def disable_switch(self):
         if self.active == True:
-            self.stopvid()
+            self.stop_vid()
             msg_box = tk.messagebox.askquestion('Warning', 'Are you sure you want to terminate the process?(all progress will lost)',icon='warning')
             if msg_box == 'yes':
                 self.initialize()
             else:
-                self.videothread.start()
+                self.video_thread.start()
                 self.update_frame()
         else:
-            self.dbconnector.date = self.date
+            self.db_connector.date = self.date
             for item in self.panel:
                 self.parent.itemconfig(item, state='normal')
                 self.parent.tag_raise(item, 'all')
-            self.savebtn.place(x= self.BgDownx - int((self.BgDownx-self.BgTopx)*0.3), y = ( self.BgTopy+int((self.BgDowny-self.BgTopy)*0.1) + int((self.BgDowny-self.BgTopy)*0.8/2) +int((self.BgDowny-self.BgTopy)*0.1) )+16+16)
+            self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
             self.active = True
 
     def most_frequent(self, List):
         return max(set(List), key = List.count)
 
     def update_frame(self):
-        if self.videothread.stopped == False and self.frameread != self.videothread.totalframe+1:
-            if len(self.videothread.frame) != 0: #self.frameread <= self.videothread.currentframe
-                ret, frame = self.videothread.grabbed.pop(0), self.videothread.frame.pop(0)
-                self.frameread += 1
+        if self.video_thread.stopped == False and self.frame_read != self.video_thread.total_frame+1:
+            if len(self.video_thread.frame) != 0:
+                ret, frame = self.video_thread.grabbed.pop(0), self.video_thread.frame.pop(0)
+                self.frame_read += 1
                 if ret:
                     img = self.model.detect(frame)
                     if self.model.prediction != Activity.non:
-                        self.counterlist[self.model.prediction].update_count(self.model.angleforcount, self.frameread)
-                        self.updatecount()
-                    self.offsetnonframe.append(self.model.prediction)
-                    if len(self.offsetnonframe) >= 10:
-                        maxappear = self.most_frequent(self.offsetnonframe)
-                        setlist = list(set(self.offsetnonframe))
-                        setlist.remove(maxappear)
+                        self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, self.frame_read)
+                        self.update_count()
+                    self.offset_non_frame.append(self.model.prediction)
+                    if len(self.offset_non_frame) >= 10:
+                        max_appear = self.most_frequent(self.offset_non_frame)
+                        setlist = list(set(self.offset_non_frame))
+                        setlist.remove(max_appear)
                         for i in setlist:
                             if i != Activity.non:
-                                self.counterlist[i].state = ActivityType.NA
-                                if self.counterlist[i].peakvalleycount % 2 == 1:
-                                    self.counterlist[i].peakvalleycount -= 1
-                                self.counterlist[i].tempcount_time = 0
+                                self.counter_list[i].state = ActivityType.NA
+                                if self.counter_list[i].peak_valley_count % 2 == 1:
+                                    self.counter_list[i].peak_valley_count -= 1
+                                self.counter_list[i].temp_count_time = 0
                     self.setCamImg(img)
-                    x0, y0, x1, y1 = self.parent.coords(self.barfill)
-                    x1 = self.initialx + int(self.total * self.frameread/self.videothread.totalframe)
-                    self.parent.coords(self.barfill, x0, y0, x1, y1)
+                    x0, y0, x1, y1 = self.parent.coords(self.bar_fill)
+                    x1 = self.initial_x + int(self.total * self.frame_read/self.video_thread.total_frame)
+                    self.parent.coords(self.bar_fill, x0, y0, x1, y1)
         else:
-            w = int((self.BgDownx-self.BgTopx)*0.8)
-            h = int((self.BgDowny-self.BgTopy)*0.8/2)
+            w = int((self.BgDown_x-self.BgTop_x)*0.8)
+            h = int((self.BgDown_y-self.BgTop_y)*0.8/2)
             blank = np.full((h, w,3), 0, np.uint8)
             self.setCamImg(blank)
-            if self.videothread.finished:
-                self.savebtn["state"] = "normal"
-    def movetop(self):
+            if self.video_thread.finished:
+                self.save_btn["state"] = "normal"
+
+    def move_top(self):
         for item in self.panel:
             self.parent.tag_raise(item, 'all')

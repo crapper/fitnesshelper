@@ -9,19 +9,19 @@ from .types import *
 class ModelController:
     def __init__(self):
         self.draw = md.solutions.drawing_utils
-        self.drawstyle = md.solutions.drawing_styles
+        self.draw_style = md.solutions.drawing_styles
         self.pose = md.solutions.pose
         self.model = self.pose.Pose(min_detection_confidence = 0.5, min_tracking_confidence = 0.5, model_complexity = 1)
         self.result = []
-        self.angleforcount = -1
+        self.angle_for_count = -1
         self.prediction = Activity.non
-        self.pointside = PointView.front
+        self.point_side = PointView.front
 
-    def initframe(self):
+    def init_frame(self):
         self.result = []
-        self.angleforcount = -1
+        self.angle_for_count = -1
         self.prediction = Activity.non
-        self.pointside = PointView.front
+        self.point_side = PointView.front
 
     def angle_cal(self, a,b,c):
         a = np.array(a, int) # First
@@ -63,7 +63,7 @@ class ModelController:
                 b = False
         return b
 
-    def facedirection(self, p1, p2):
+    def face_direction(self, p1, p2):
         if p1[1] > p2[1]:
             return PointView.up
         else:
@@ -73,53 +73,53 @@ class ModelController:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = self.model.process(frame)
         h, w, c = frame.shape
-        keypoints = []
+        key_points = []
         if results.pose_landmarks:
             for data_point in results.pose_landmarks.landmark:
-                keypoints.append([int(data_point.x*w), int(data_point.y*h), int(data_point.z*w), data_point.visibility])
-            self.result = keypoints
-            self.pointside = self.side(keypoints[0], keypoints[11], keypoints[12]) # detect side
-            L_full = [keypoints[0][3], keypoints[2][3], keypoints[11][3], keypoints[23][3], keypoints[25][3], keypoints[27][3]]
-            R_full = [keypoints[0][3], keypoints[5][3], keypoints[12][3], keypoints[24][3], keypoints[26][3], keypoints[28][3]]
-            if self.pointside != PointView.front and (self.isOneSideFull(L_full) == True or self.isOneSideFull(R_full) == True):
-                if self.pointside == PointView.left:
-                    angle_classify_pushup = self.angle_cal(keypoints[11], keypoints[23], keypoints[25])
-                    face_classify_pushup2 = self.facedirection(keypoints[2], keypoints[0])
-                    angle_classify_situp = self.angle_cal(keypoints[23], keypoints[25], keypoints[27])
-                    angle_classify_situp2 = self.angle_cal(keypoints[23], keypoints[25], [keypoints[25][0], 0])
-                    angle_classify_squat = self.angle_cal(keypoints[11], keypoints[23], [keypoints[23][0], 0])
-                    mid1 = [int((keypoints[11][0]+keypoints[23][0])/2), int((keypoints[11][1]+keypoints[23][1])/2)]
-                    mid2 = [int((keypoints[25][0]+keypoints[27][0])/2), int((keypoints[25][1]+keypoints[27][1])/2)]
+                key_points.append([int(data_point.x*w), int(data_point.y*h), int(data_point.z*w), data_point.visibility])
+            self.result = key_points
+            self.point_side = self.side(key_points[0], key_points[11], key_points[12]) # detect side
+            L_full = [key_points[0][3], key_points[2][3], key_points[11][3], key_points[23][3], key_points[25][3], key_points[27][3]]
+            R_full = [key_points[0][3], key_points[5][3], key_points[12][3], key_points[24][3], key_points[26][3], key_points[28][3]]
+            if self.point_side != PointView.front and (self.isOneSideFull(L_full) == True or self.isOneSideFull(R_full) == True):
+                if self.point_side == PointView.left:
+                    angle_classify_pushup = self.angle_cal(key_points[11], key_points[23], key_points[25])
+                    face_classify_pushup2 = self.face_direction(key_points[2], key_points[0])
+                    angle_classify_situp = self.angle_cal(key_points[23], key_points[25], key_points[27])
+                    angle_classify_situp2 = self.angle_cal(key_points[23], key_points[25], [key_points[25][0], 0])
+                    angle_classify_squat = self.angle_cal(key_points[11], key_points[23], [key_points[23][0], 0])
+                    mid1 = [int((key_points[11][0]+key_points[23][0])/2), int((key_points[11][1]+key_points[23][1])/2)]
+                    mid2 = [int((key_points[25][0]+key_points[27][0])/2), int((key_points[25][1]+key_points[27][1])/2)]
                     mid3 = [mid2[0], 0]
                     angle_classify_squat2 = self.angle_cal(mid1, mid2, mid3)
                 else:
-                    angle_classify_pushup = self.angle_cal(keypoints[12], keypoints[24], keypoints[26])
-                    face_classify_pushup2 = self.facedirection(keypoints[5], keypoints[0])
-                    angle_classify_situp = self.angle_cal(keypoints[24], keypoints[26], keypoints[28])
-                    angle_classify_situp2 = self.angle_cal(keypoints[24], keypoints[26], [keypoints[26][0], 0])
-                    angle_classify_squat = self.angle_cal(keypoints[12], keypoints[24], [keypoints[24][0], 0])
-                    mid1 = [int((keypoints[12][0]+keypoints[24][0])/2), int((keypoints[12][1]+keypoints[24][1])/2)]
-                    mid2 = [int((keypoints[26][0]+keypoints[28][0])/2), int((keypoints[26][1]+keypoints[28][1])/2)]
+                    angle_classify_pushup = self.angle_cal(key_points[12], key_points[24], key_points[26])
+                    face_classify_pushup2 = self.face_direction(key_points[5], key_points[0])
+                    angle_classify_situp = self.angle_cal(key_points[24], key_points[26], key_points[28])
+                    angle_classify_situp2 = self.angle_cal(key_points[24], key_points[26], [key_points[26][0], 0])
+                    angle_classify_squat = self.angle_cal(key_points[12], key_points[24], [key_points[24][0], 0])
+                    mid1 = [int((key_points[12][0]+key_points[24][0])/2), int((key_points[12][1]+key_points[24][1])/2)]
+                    mid2 = [int((key_points[26][0]+key_points[28][0])/2), int((key_points[26][1]+key_points[28][1])/2)]
                     mid3 = [mid2[0], 0]
                     angle_classify_squat2 = self.angle_cal(mid1, mid2, mid3)
                 self.prediction = self.predict(angle_classify_pushup, face_classify_pushup2, angle_classify_situp, angle_classify_situp2, angle_classify_squat, angle_classify_squat2)               
                 if self.prediction == Activity.pushup:
-                    self.angleforcount = self.angle_cal(keypoints[12], keypoints[14], keypoints[16])
+                    self.angle_for_count = self.angle_cal(key_points[12], key_points[14], key_points[16])
                 elif self.prediction == Activity.situp:
-                    self.angleforcount = self.angle_cal(keypoints[12], keypoints[24], keypoints[26])
+                    self.angle_for_count = self.angle_cal(key_points[12], key_points[24], key_points[26])
                 elif self.prediction == Activity.squat:
-                    self.angleforcount = self.angle_cal(keypoints[24], keypoints[26], [keypoints[26][0], 0])
+                    self.angle_for_count = self.angle_cal(key_points[24], key_points[26], [key_points[26][0], 0])
                 else:
-                    self.angleforcount = -1
+                    self.angle_for_count = -1
             else:
-                self.initframe()
+                self.init_frame()
             self.draw.draw_landmarks(
                     frame, 
                     results.pose_landmarks, 
                     self.pose.POSE_CONNECTIONS, 
-                    self.drawstyle.DrawingSpec(color=(0,255,0), thickness=4, circle_radius= 4),
-                    self.drawstyle.DrawingSpec(color=(255,0,0), thickness=4, circle_radius= 4)
+                    self.draw_style.DrawingSpec(color=(0,255,0), thickness=4, circle_radius= 4),
+                    self.draw_style.DrawingSpec(color=(255,0,0), thickness=4, circle_radius= 4)
             )
         else:
-            self.initframe()
+            self.init_frame()
         return frame
