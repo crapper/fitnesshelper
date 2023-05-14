@@ -52,9 +52,6 @@ class ConfigPage(Page):
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
         self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + size, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
 
-        for item in self.panel:
-            self.parent.tag_raise(item, 'all')
-
     def hide_page(self):
         self.active = False
 
@@ -64,9 +61,15 @@ class ConfigPage(Page):
         self.weight_entry.place_forget()
 
     def request_open_page(self):
+        if self.active:
+            return True
+
         self.show_page()
         return True
 
     def request_close_page(self):
+        if self.active == False:
+            return True
+
         self.hide_page()
         return True

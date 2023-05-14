@@ -41,12 +41,13 @@ class StatisticPage(Page):
 
         self.left_btn.place(x=0, y=self.controller.height/2)
         self.right_btn.place(x=0, y=self.controller.height/2+100)
-        self.parent.tag_raise(self.cam, 'all')
         self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date), "Calories Trend for all activities"))
         self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "pushup"), "Calories Trend for pushup"))
         self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "situp"), "Calories Trend for situp"))
         self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "squat"), "Calories Trend for squat"))
         self.setCamImg(self.plot_graph_list[self.state])
+
+        self.parent.itemconfig(self.cam, state='normal')
 
     def hide_page(self):
         self.active = False
@@ -62,7 +63,12 @@ class StatisticPage(Page):
         blank = np.full((h, w,3), 255, np.uint8)
         self.setCamImg(blank)
 
+        self.parent.itemconfig(self.cam, state='hidden')
+
     def request_open_page(self):
+        if self.active:
+            return True
+
         dt = datetime.datetime.strptime(self.start_date, '%d-%m-%Y').date()
         dt2 = datetime.datetime.strptime(self.end_date, '%d-%m-%Y').date()
         if dt > dt2:
@@ -75,6 +81,9 @@ class StatisticPage(Page):
             return True
 
     def request_close_page(self):
+        if self.active == False:
+            return True
+
         self.hide_page()
         return True
                 

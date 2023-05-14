@@ -18,7 +18,7 @@ class FitnessHelper(App):
     def __init__(self, *args, **kwargs):
         App.__init__(self, *args, **kwargs)
         
-        self.c = tk.Canvas(self, width=self.width, height=self.height, bg = 'blue')
+        self.c = tk.Canvas(self, width=self.width, height=self.height, bg = 'black')
         self.c.pack()
         self.expect_frame = 20
         self.after_keeper = None
@@ -28,12 +28,6 @@ class FitnessHelper(App):
         self.camera_page = CameraPage(self.c, self)
         self.video_page = VideoPage(self.c, self)
         self.config_page = ConfigPage(self.c, self)
-
-        self.pages : list[Page] = []
-        self.pages.append(self.statistic_page)
-        self.pages.append(self.camera_page)
-        self.pages.append(self.video_page)
-        self.pages.append(self.config_page)
 
         # create the bar with buttons
         self.start_x = int(self.width * 0.9)
@@ -117,13 +111,13 @@ class FitnessHelper(App):
     def switchStatisticPage(self):
         if self.video_page.active:
             return
-        
+
+        self.camera_page.request_close_page()
+
         self.statistic_page.start_date = self.pick_date("Pick Start Date for Statistic")
         self.statistic_page.end_date = self.pick_date("Pick End Date for Statistic")
         if self.statistic_page.start_date != '' or self.statistic_page.end_date != '':
             self.statistic_page.toggle_visible()
-            # if self.config_page.active == True:
-            #     self.config_page.move_top()
 
     def switchConfigPage(self):
         if self.video_page.active or self.camera_page.active:

@@ -31,17 +31,25 @@ class CameraPage(Page):
     def show_page(self):
         self.active = True
 
+        self.parent.itemconfig(self.cam, state='normal')
         self.start_vid()
-        self.parent.tag_raise(self.cam, 'all')
 
     def hide_page(self):
         self.active = False
 
+        self.parent.itemconfig(self.cam, state='hidden')
+
     def request_open_page(self):
+        if self.active:
+            return True
+
         self.show_page()
         return True
 
     def request_close_page(self):
+        if self.active == False:
+            return True
+
         self.stop_vid()
         msg_box = tk.messagebox.askquestion('Warning', 'Are you save the counting to the database?(all progress will lost if no is selected)',icon='warning')
         if msg_box == 'yes':
@@ -81,6 +89,8 @@ class CameraPage(Page):
         return max(set(List), key = List.count)
 
     def update_frame(self):
+        if self.video_thread == None:
+            return
         if self.video_thread.stopped == False:
             if len(self.video_thread.grabbed) > 0:
                 ret, frame = self.video_thread.grabbed[0], self.video_thread.frame[0]

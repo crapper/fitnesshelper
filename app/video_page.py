@@ -125,6 +125,7 @@ class VideoPage(Page):
             self.parent.itemconfig(item, state='normal')
             self.parent.tag_raise(item, 'all')
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
+        
 
     def hide_page(self):
         self.active = False
@@ -132,10 +133,16 @@ class VideoPage(Page):
         self.reset()
 
     def request_open_page(self):
+        if self.active:
+            return True
+
         self.show_page()
         return True
 
     def request_close_page(self):
+        if self.active == False:
+            return True
+
         self.stop_vid()
         msg_box = tk.messagebox.askquestion('Warning', 'Are you sure you want to terminate the process?(all progress will lost)',icon='warning')
         if msg_box == 'yes':
@@ -150,6 +157,8 @@ class VideoPage(Page):
         return max(set(List), key = List.count)
 
     def update_frame(self):
+        if self.video_thread == None:
+            return
         if self.video_thread.stopped == False and self.frame_read != self.video_thread.total_frame+1:
             if len(self.video_thread.frame) != 0:
                 ret, frame = self.video_thread.grabbed.pop(0), self.video_thread.frame.pop(0)
@@ -181,7 +190,3 @@ class VideoPage(Page):
             self.setCamImg(blank)
             if self.video_thread.finished:
                 self.save_btn["state"] = "normal"
-
-    # def move_top(self):
-    #     for item in self.panel:
-    #         self.parent.tag_raise(item, 'all')
