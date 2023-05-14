@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 
 from .sql_connector import *
+from .page import *
 
 
-class StatisticPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.parent = parent
+class StatisticPage(Page):
+    def __init__(self, parent: tk.Canvas, controller):
+        Page.__init__(self, parent)
         self.controller = controller
         self.active = False
         w = int(self.controller.width * 0.9)

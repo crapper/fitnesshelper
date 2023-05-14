@@ -1,3 +1,4 @@
+import cv2
 import tkinter as tk
 import numpy as np
 from PIL import Image, ImageTk
@@ -6,11 +7,11 @@ from .counter import *
 from .video_get import *
 from .model_controller import *
 from .sql_connector import *
+from .page import *
 
-class CameraPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.parent = parent
+class CameraPage(Page):
+    def __init__(self, parent: tk.Canvas, controller):
+        Page.__init__(self, parent)
         self.controller = controller
         self.model = ModelController()
         w = int(self.controller.width * 0.9)

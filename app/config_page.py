@@ -1,10 +1,11 @@
 import tkinter as tk
 import tkinter.font as tkFont
 
-class ConfigPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.parent = parent
+from .page import *
+
+class ConfigPage(Page):
+    def __init__(self, parent: tk.Canvas, controller):
+        Page.__init__(self, parent)
         self.controller = controller
         self.panel = []
         self.BgTop_x = 688

@@ -7,12 +7,12 @@ from .model_controller import *
 from .video_get import *
 from .sql_connector import *
 from .counter import *
+from .page import *
 
 
-class VideoPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.parent = parent
+class VideoPage(Page):
+    def __init__(self, parent: tk.Canvas, controller):
+        Page.__init__(self, parent)
         self.controller = controller
         self.model = ModelController()
         self.panel = []

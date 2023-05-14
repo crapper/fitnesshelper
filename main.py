@@ -4,6 +4,8 @@ import tkinter.messagebox as messagebox
 import tkinter.filedialog as fd
 from PIL import Image, ImageTk
 import datetime
+import math
+import time
 import numpy as np
 
 from app import *
@@ -29,11 +31,16 @@ class FitnessHelper(tk.Tk):
 
         # Create a dictionary of frames
         # self.bar = BarPage(self.c, self)
-        self.frames = []
-        self.frames.append(StatisticPage(self.c, self))
-        self.frames.append(CameraPage(self.c, self))
-        self.frames.append(VideoPage(self.c, self))
-        self.frames.append(ConfigPage(self.c, self))
+        self.statistic_page = StatisticPage(self.c, self)
+        self.camera_page = CameraPage(self.c, self)
+        self.video_page = VideoPage(self.c, self)
+        self.config_page = ConfigPage(self.c, self)
+
+        self.pages : tk.Frame = []
+        self.pages.append(self.statistic_page)
+        self.pages.append(self.camera_page)
+        self.pages.append(self.video_page)
+        self.pages.append(self.config_page)
 
         # create the bar with buttons
         self.start_x = int(self.width * 0.9)
@@ -59,8 +66,8 @@ class FitnessHelper(tk.Tk):
 
     def disabler(self, list_disable_index):
         for i in list_disable_index:
-            if self.frames[i].active == True:
-                self.frames[i].disable_switch()
+            if self.pages[i].active == True:
+                self.pages[i].disable_switch()
 
     def update_video_date(self, date_win, cal):
         self.temp_date = cal.get_date()
@@ -81,11 +88,11 @@ class FitnessHelper(tk.Tk):
 
     def switchCameraPage(self):
         if self.weight != -1:
-            self.frames[1].disable_switch()
+            self.camera_page.disable_switch()
             list_disable = [0, 3]
             self.disabler(list_disable)
-            if self.frames[2].active == True:
-                self.frames[2].move_top()
+            if self.video_page.active == True:
+                self.video_page.move_top()
         else:
             messagebox.showinfo('Warning', 'Please enter your weight in the config page')
 
@@ -95,31 +102,34 @@ class FitnessHelper(tk.Tk):
                 ('mp4 files', '*.mp4'),
                 ('avi files', '*.avi')
             )
-            if self.frames[2].active == False:
+            if self.video_page.active == False:
                 list_disable = [0, 3]
                 self.disabler(list_disable)
                 filename = fd.askopenfilename(title='Open a file',filetypes=filetypes)
                 if filename != '':
                     self.pick_date("Pick Date for Video")
+                    self.video_page.date = self.temp_date
+                    self.video_page.disable_switch()
                     self.frames[2].date = self.temp_date
                     self.frames[2].disable_switch()
                     if self.frames[2].video_stopped() == True:
                         self.frames[2].start_vid(filename)
             else:
-                self.frames[2].disable_switch()
+                self.video_page.disable_switch()
         else:
             messagebox.showinfo('Warning', 'Please enter your weight in the config page')
 
     def switchStatisticPage(self):
         any_other_active = False
-        for i in range(len(self.frames)):
+        for i in range(len(self.pages)):
             if i != 0 and i != 3:
-                if self.frames[i].active == True:
+                if self.pages[i].active == True:
                     any_other_active = True
         if any_other_active == False:
             self.pick_date("Pick Start Date for Statistic")
-            self.frames[0].start_date = self.temp_date
+            self.statistic_page.start_date = self.temp_date
             self.pick_date("Pick End Date for Statistic")
+            self.statistic_page.end_date = self.temp_date
             self.frames[0].end_date = self.temp_date
             self.frames[0].disable_switch()
             if self.frames[3].active == True:
@@ -127,19 +137,19 @@ class FitnessHelper(tk.Tk):
 
     def switchConfigPage(self):
         any_other_active = False
-        for i in range(len(self.frames)):
+        for i in range(len(self.pages)):
             if i != 3 and i != 0:
-                if self.frames[i].active == True:
+                if self.pages[i].active == True:
                     any_other_active = True
         if any_other_active == False:
-            self.frames[3].disable_switch()
+            self.config_page.disable_switch()
 
     def update_frame(self):
         start_time = time.time()
-        if self.frames[1].active:
-            self.frames[1].update_frame()
-        if self.frames[2].active:
-            self.frames[2].update_frame()
+        if self.camera_page.active:
+            self.camera_page.update_frame()
+        if self.video_page.active:
+            self.video_page.update_frame()
         wait_time = max(1, math.ceil(1000/self.expect_frame - (time.time()- start_time)/1000))
         self.after_keeper = self.after(wait_time, self.update_frame)
     

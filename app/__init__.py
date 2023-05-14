@@ -8,3 +8,4 @@ from .statistic_page import *
 from .types import *
 from .video_get import *
 from .video_page import *
+from .page import *
