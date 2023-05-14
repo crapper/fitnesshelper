@@ -2,6 +2,7 @@
 from .camera_page import *
 from .counter import *
 from .config_page import *
+from .fitness_helper import *
 from .model_controller import *
 from .sql_connector import *
 from .statistic_page import *

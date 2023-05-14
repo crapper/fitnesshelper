@@ -4,9 +4,8 @@ import tkinter.font as tkFont
 from .page import *
 
 class ConfigPage(Page):
-    def __init__(self, parent: tk.Canvas, controller):
-        Page.__init__(self, parent)
-        self.controller = controller
+    def __init__(self, parent: tk.Canvas, controller: App):
+        Page.__init__(self, parent, controller)
         self.panel = []
         self.BgTop_x = 688
         self.BgTop_y = 188
@@ -27,9 +26,8 @@ class ConfigPage(Page):
         self.save_btn = tk.Button(self.controller, image=self.pixel, text="Save", state='normal', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save(int(self.weight_entry.get())))
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
         self.save_btn.place_forget()
-        self.active = False
-        for item in self.panel:
-            self.parent.itemconfig(item, state='hidden')
+        
+        self.hide_page()
 
     def save(self, weight):
         self.controller.weight = weight
@@ -46,6 +44,7 @@ class ConfigPage(Page):
 
     def show_page(self):
         self.active = True
+
         for item in self.panel:
             self.parent.itemconfig(item, state='normal')
             self.parent.tag_raise(item, 'all')
@@ -58,7 +57,16 @@ class ConfigPage(Page):
 
     def hide_page(self):
         self.active = False
+
         for item in self.panel:
             self.parent.itemconfig(item, state='hidden')
         self.save_btn.place_forget()
         self.weight_entry.place_forget()
+
+    def request_open_page(self):
+        self.show_page()
+        return True
+
+    def request_close_page(self):
+        self.hide_page()
+        return True

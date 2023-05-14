@@ -2,6 +2,7 @@ import cv2
 import tkinter as tk
 import numpy as np
 from PIL import Image, ImageTk
+from typing import Optional
 
 from .model_controller import *
 from .video_get import *
@@ -9,11 +10,9 @@ from .sql_connector import *
 from .counter import *
 from .page import *
 
-
 class VideoPage(Page):
-    def __init__(self, parent: tk.Canvas, controller):
-        Page.__init__(self, parent)
-        self.controller = controller
+    def __init__(self, parent: tk.Canvas, controller: App):
+        Page.__init__(self, parent, controller)
         self.model = ModelController()
         self.panel = []
         self.BgTop_x = 688
@@ -54,12 +53,11 @@ class VideoPage(Page):
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
         self.save_btn.place_forget()
         self.date = ""
-        self.active = False
         self.video_thread = None
         self.frame_read = 0
         self.offset_non_frame = []
-        for item in self.panel:
-            self.parent.itemconfig(item, state='hidden')
+
+        self.hide_page()
 
     def save(self):
         for p in range(len(self.counter_list)):
@@ -67,14 +65,15 @@ class VideoPage(Page):
                 MET = 3.8 * 3.5 * self.controller.weight / 200 * (self.counter_list[p].total_time/self.video_thread.fps_video/ 60)
                 self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time/self.video_thread.fps_video, MET)
         self.stop_vid()
-        self.initialize()
+        self.hide_page()
 
     def video_stopped(self):
         if self.video_thread != None:
             return self.video_thread.stopped
         else:
             return True
-    def setCamImg(self, img_np):
+
+    def setCamImg(self, img_np: cv2.Mat):
         w = int((self.BgDown_x-self.BgTop_x)*0.8)
         h = int((self.BgDown_y-self.BgTop_y)*0.8/2)
         img_np = cv2.resize(img_np, (w, h))
@@ -87,10 +86,10 @@ class VideoPage(Page):
         self.parent.itemconfig(self.panel[6], text="Situp: "+str(self.counter_list[Activity.situp].get_count()))
         self.parent.itemconfig(self.panel[7], text="Squat: "+str(self.counter_list[Activity.squat].get_count()))
 
-    def start_vid(self, source):
+    def start_vid(self, source: Optional[str] = None):
         if self.video_thread != None:
             self.video_thread.start()
-        else:
+        elif source != None:
             self.video_thread = VideoGet(source, 15)
             self.video_thread.start()
 
@@ -102,39 +101,50 @@ class VideoPage(Page):
         blank = np.full((h, w,3), 0, np.uint8)
         self.setCamImg(blank)
     
-    def initialize(self):
+    def reset(self):
+        self.stop_vid()
         self.date = ""
         self.save_btn["state"] = "disable"
         self.save_btn.place_forget()
         self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
         self.db_connector = SQLconnector()
-        if self.video_thread!= None:
+        if self.video_thread != None:
             self.video_thread = None
         self.frame_read = 0
         x0, y0, x1, y1 = self.parent.coords(self.bar_fill)
         self.parent.coords(self.bar_fill, self.initial_x, y0, self.initial_x, y1)
         for item in self.panel:
             self.parent.itemconfig(item, state='hidden')
-        self.active = False
         self.model.model.reset()
 
-    
     def show_page(self):
+        self.active = True
+
         self.db_connector.date = self.date
         for item in self.panel:
             self.parent.itemconfig(item, state='normal')
             self.parent.tag_raise(item, 'all')
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
-        self.active = True
 
     def hide_page(self):
+        self.active = False
+
+        self.reset()
+
+    def request_open_page(self):
+        self.show_page()
+        return True
+
+    def request_close_page(self):
         self.stop_vid()
         msg_box = tk.messagebox.askquestion('Warning', 'Are you sure you want to terminate the process?(all progress will lost)',icon='warning')
         if msg_box == 'yes':
-            self.initialize()
+            self.hide_page()
+            return True
         else:
-            self.video_thread.start()
+            self.start_vid()
             self.update_frame()
+            return False
 
     def most_frequent(self, List):
         return max(set(List), key = List.count)
@@ -172,6 +182,6 @@ class VideoPage(Page):
             if self.video_thread.finished:
                 self.save_btn["state"] = "normal"
 
-    def move_top(self):
-        for item in self.panel:
-            self.parent.tag_raise(item, 'all')
+    # def move_top(self):
+    #     for item in self.panel:
+    #         self.parent.tag_raise(item, 'all')

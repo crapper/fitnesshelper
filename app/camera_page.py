@@ -10,9 +10,8 @@ from .sql_connector import *
 from .page import *
 
 class CameraPage(Page):
-    def __init__(self, parent: tk.Canvas, controller):
-        Page.__init__(self, parent)
-        self.controller = controller
+    def __init__(self, parent: tk.Canvas, controller: App):
+        Page.__init__(self, parent, controller)
         self.model = ModelController()
         w = int(self.controller.width * 0.9)
         h = self.controller.height
@@ -21,33 +20,43 @@ class CameraPage(Page):
         self.img_tk = ImageTk.PhotoImage(image=self.img) 
         self.cam = parent.create_image(0,0, image=self.img_tk, anchor=tk.NW)
         self.video_thread = VideoGet(0, 20)
-        self.active = False
         self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
         self.db_connector = SQLconnector()
         self.counter_list[0].peak_valley_count = 10
         self.counter_list[0].total_time = 100
         self.offset_non_frame = []
 
+        self.hide_page()
+
     def show_page(self):
-        if self.video_thread.stopped == False:
-            self.stop_vid()
-            msg_box = tk.messagebox.askquestion('Warning', 'Are you save the counting to the database?(all progress will lost if no is selected)',icon='warning')
-            if msg_box == 'yes':
-                for p in range(len(self.counter_list)):
-                    if self.counter_list[p].get_count() > 0:
-                        MET = 3.8 * 3.5 * self.controller.weight / 200 * self.counter_list[p].total_time / 60
-                        self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time, MET)
-            self.active = False
-            self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
-            self.model.model.reset()
+        self.active = True
+
+        self.start_vid()
+        self.parent.tag_raise(self.cam, 'all')
 
     def hide_page(self):
-        if self.video_thread.stopped == True:
-            self.start_vid()
-            self.parent.tag_raise(self.cam, 'all')
-            self.active = True 
+        self.active = False
 
-    def setCamImg(self, img_np):
+    def request_open_page(self):
+        self.show_page()
+        return True
+
+    def request_close_page(self):
+        self.stop_vid()
+        msg_box = tk.messagebox.askquestion('Warning', 'Are you save the counting to the database?(all progress will lost if no is selected)',icon='warning')
+        if msg_box == 'yes':
+            for p in range(len(self.counter_list)):
+                if self.counter_list[p].get_count() > 0:
+                    MET = 3.8 * 3.5 * self.controller.weight / 200 * self.counter_list[p].total_time / 60
+                    self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time, MET)
+        
+        self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
+        self.model.model.reset()
+
+        self.hide_page()
+        return True
+
+    def setCamImg(self, img_np: cv2.Mat):
         w = int(self.controller.width * 0.9)
         h = self.controller.height
         img_np = cv2.resize(img_np, (w, h))
