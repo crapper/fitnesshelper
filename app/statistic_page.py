@@ -37,36 +37,36 @@ class StatisticPage(Page):
         self.state = (self.state + state) % 4
         self.setCamImg(self.plot_graph_list[self.state])
 
-    def disable_switch(self):
-        if self.active == True:
-            self.active = False
+    def show_page(self):
+        dt = datetime.datetime.strptime(self.start_date, '%d-%m-%Y').date()
+        dt2 = datetime.datetime.strptime(self.end_date, '%d-%m-%Y').date()
+        if dt > dt2:
+            tk.messagebox.showinfo('Warning', 'End date must be later than start date')
             self.start_date = ""
             self.end_date = ""
-            self.state = 0
-            self.plot_graph_list = []
-            self.left_btn.place_forget()
-            self.right_btn.place_forget()
-            w = int(self.controller.width * 0.9)
-            h = self.controller.height
-            blank = np.full((h, w,3), 255, np.uint8)
-            self.setCamImg(blank)
         else:
-            dt = datetime.datetime.strptime(self.start_date, '%d-%m-%Y').date()
-            dt2 = datetime.datetime.strptime(self.end_date, '%d-%m-%Y').date()
-            if dt > dt2:
-                tk.messagebox.showinfo('Warning', 'End date must be later than start date')
-                self.start_date = ""
-                self.end_date = ""
-            else:
-                self.left_btn.place(x=0, y=self.controller.height/2)
-                self.right_btn.place(x=0, y=self.controller.height/2+100)
-                self.active = True
-                self.parent.tag_raise(self.cam, 'all')
-                self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date), "Calories Trend for all activities"))
-                self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "pushup"), "Calories Trend for pushup"))
-                self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "situp"), "Calories Trend for situp"))
-                self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "squat"), "Calories Trend for squat"))
-                self.setCamImg(self.plot_graph_list[self.state])
+            self.left_btn.place(x=0, y=self.controller.height/2)
+            self.right_btn.place(x=0, y=self.controller.height/2+100)
+            self.active = True
+            self.parent.tag_raise(self.cam, 'all')
+            self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date), "Calories Trend for all activities"))
+            self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "pushup"), "Calories Trend for pushup"))
+            self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "situp"), "Calories Trend for situp"))
+            self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "squat"), "Calories Trend for squat"))
+            self.setCamImg(self.plot_graph_list[self.state])
+
+    def hide_page(self):
+        self.active = False
+        self.start_date = ""
+        self.end_date = ""
+        self.state = 0
+        self.plot_graph_list = []
+        self.left_btn.place_forget()
+        self.right_btn.place_forget()
+        w = int(self.controller.width * 0.9)
+        h = self.controller.height
+        blank = np.full((h, w,3), 255, np.uint8)
+        self.setCamImg(blank)            
                 
     def list_to_img(self, lst, title="Calories Trend"):
         dateMETlist = []

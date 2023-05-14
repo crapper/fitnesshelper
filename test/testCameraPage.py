@@ -13,16 +13,16 @@ class TestCameraPage(unittest.TestCase):
         self.controller.weight = 70
         self.camera_page = CameraPage(self.app, self.controller)
 
-    def test_disable_switch(self):
-        # Test that active is set to False and counters are reset when disable_switch is called while active is True
+    def test_toggle_visible(self):
+        # Test that active is set to False and counters are reset when toggle_visible is called while active is True
         self.camera_page.active = True
         self.camera_page.counter_list[0].update_count(10, 100) # Add some counts to the PushupCounter
-        self.camera_page.disable_switch()
+        self.camera_page.toggle_visible()
         self.assertFalse(self.camera_page.active)
         self.assertEqual(self.camera_page.counter_list[0].get_count(), 0)
 
-        # Test that active is set to True when disable_switch is called while active is False
-        self.camera_page.disable_switch()
+        # Test that active is set to True when toggle_visible is called while active is False
+        self.camera_page.toggle_visible()
         self.assertTrue(self.camera_page.active)
 
     def test_most_frequent(self):

@@ -67,7 +67,7 @@ class FitnessHelper(tk.Tk):
     def disabler(self, list_disable_index):
         for i in list_disable_index:
             if self.pages[i].active == True:
-                self.pages[i].disable_switch()
+                self.pages[i].toggle_visible()
 
     def update_video_date(self, date_win, cal):
         self.temp_date = cal.get_date()
@@ -88,11 +88,9 @@ class FitnessHelper(tk.Tk):
 
     def switchCameraPage(self):
         if self.weight != -1:
-            self.camera_page.disable_switch()
+            self.camera_page.toggle_visible()
             list_disable = [0, 3]
             self.disabler(list_disable)
-            if self.video_page.active == True:
-                self.video_page.move_top()
         else:
             messagebox.showinfo('Warning', 'Please enter your weight in the config page')
 
@@ -114,7 +112,7 @@ class FitnessHelper(tk.Tk):
                         if self.video_page.video_stopped() == True:
                             self.video_page.start_vid(filename)
             else:
-                self.video_page.disable_switch()
+                self.video_page.toggle_visible()
         else:
             messagebox.showinfo('Warning', 'Please enter your weight in the config page')
 
@@ -130,7 +128,7 @@ class FitnessHelper(tk.Tk):
             self.pick_date("Pick End Date for Statistic")
             self.statistic_page.end_date = self.temp_date
             if self.statistic_page.start_date != '' and self.statistic_page.end_date != '':
-                self.statistic_page.disable_switch()
+                self.statistic_page.toggle_visible()
                 if self.config_page.active == True:
                     self.config_page.move_top()
 
@@ -141,7 +139,7 @@ class FitnessHelper(tk.Tk):
                 if self.pages[i].active == True:
                     any_other_active = True
         if any_other_active == False:
-            self.config_page.disable_switch()
+            self.config_page.toggle_visible()
 
     def update_frame(self):
         start_time = time.time()

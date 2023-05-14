@@ -118,22 +118,23 @@ class VideoPage(Page):
         self.active = False
         self.model.model.reset()
 
-    def disable_switch(self):
-        if self.active == True:
-            self.stop_vid()
-            msg_box = tk.messagebox.askquestion('Warning', 'Are you sure you want to terminate the process?(all progress will lost)',icon='warning')
-            if msg_box == 'yes':
-                self.initialize()
-            else:
-                self.video_thread.start()
-                self.update_frame()
+    
+    def show_page(self):
+        self.db_connector.date = self.date
+        for item in self.panel:
+            self.parent.itemconfig(item, state='normal')
+            self.parent.tag_raise(item, 'all')
+        self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
+        self.active = True
+
+    def hide_page(self):
+        self.stop_vid()
+        msg_box = tk.messagebox.askquestion('Warning', 'Are you sure you want to terminate the process?(all progress will lost)',icon='warning')
+        if msg_box == 'yes':
+            self.initialize()
         else:
-            self.db_connector.date = self.date
-            for item in self.panel:
-                self.parent.itemconfig(item, state='normal')
-                self.parent.tag_raise(item, 'all')
-            self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
-            self.active = True
+            self.video_thread.start()
+            self.update_frame()
 
     def most_frequent(self, List):
         return max(set(List), key = List.count)

@@ -6,8 +6,14 @@ class Page(tk.Frame):
         self.parent = parent
         self.active = False
 
-    def disable_switch(self):
+    def show_page(self):
         pass
 
-    def move_top(self):
+    def hide_page(self):
         pass
+
+    def toggle_visible(self):
+        if self.active == False:
+            self.show_page()
+        else:
+            self.hide_page()

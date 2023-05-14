@@ -28,11 +28,9 @@ class CameraPage(Page):
         self.counter_list[0].total_time = 100
         self.offset_non_frame = []
 
-    def disable_switch(self):
-        if self.active == True:
-            if self.video_thread.stopped == False:
-                self.stop_vid()
-            # self.parent.itemconfig(self.cam, state='hidden')
+    def show_page(self):
+        if self.video_thread.stopped == False:
+            self.stop_vid()
             msg_box = tk.messagebox.askquestion('Warning', 'Are you save the counting to the database?(all progress will lost if no is selected)',icon='warning')
             if msg_box == 'yes':
                 for p in range(len(self.counter_list)):
@@ -42,11 +40,12 @@ class CameraPage(Page):
             self.active = False
             self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
             self.model.model.reset()
-        else:
-            if self.video_thread.stopped == True:
-                self.start_vid()
+
+    def hide_page(self):
+        if self.video_thread.stopped == True:
+            self.start_vid()
             self.parent.tag_raise(self.cam, 'all')
-            self.active = True
+            self.active = True 
 
     def setCamImg(self, img_np):
         w = int(self.controller.width * 0.9)

@@ -34,7 +34,7 @@ class ConfigPage(Page):
     def save(self, weight):
         self.controller.weight = weight
         tk.messagebox.showinfo("Success", "Weight update successful to "+str(weight))
-        self.disable_switch()
+        self.toggle_visible()
 
     def validate_entry(self, P):
         try:
@@ -44,22 +44,21 @@ class ConfigPage(Page):
             return False
         return True
 
-    def disable_switch(self):
-        if self.active == False:
-            self.active = True
-            for item in self.panel:
-                self.parent.itemconfig(item, state='normal')
-                self.parent.tag_raise(item, 'all')
-            size = tkFont.Font(size=16, family='Helvetica').measure('Weight: ')
-            self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
-            self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + size, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
-        else:
-            self.active = False
-            for item in self.panel:
-                self.parent.itemconfig(item, state='hidden')
-            self.save_btn.place_forget()
-            self.weight_entry.place_forget()
+    def show_page(self):
+        self.active = True
+        for item in self.panel:
+            self.parent.itemconfig(item, state='normal')
+            self.parent.tag_raise(item, 'all')
+        size = tkFont.Font(size=16, family='Helvetica').measure('Weight: ')
+        self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
+        self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + size, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
 
-    def move_top(self):
         for item in self.panel:
             self.parent.tag_raise(item, 'all')
+
+    def hide_page(self):
+        self.active = False
+        for item in self.panel:
+            self.parent.itemconfig(item, state='hidden')
+        self.save_btn.place_forget()
+        self.weight_entry.place_forget()
