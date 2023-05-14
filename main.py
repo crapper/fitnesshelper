@@ -110,10 +110,9 @@ class FitnessHelper(tk.Tk):
                     self.pick_date("Pick Date for Video")
                     self.video_page.date = self.temp_date
                     self.video_page.disable_switch()
-                    self.frames[2].date = self.temp_date
-                    self.frames[2].disable_switch()
-                    if self.frames[2].video_stopped() == True:
-                        self.frames[2].start_vid(filename)
+                    if self.video_page.date == '':
+                        if self.video_page.video_stopped() == True:
+                            self.video_page.start_vid(filename)
             else:
                 self.video_page.disable_switch()
         else:
@@ -130,10 +129,10 @@ class FitnessHelper(tk.Tk):
             self.statistic_page.start_date = self.temp_date
             self.pick_date("Pick End Date for Statistic")
             self.statistic_page.end_date = self.temp_date
-            self.frames[0].end_date = self.temp_date
-            self.frames[0].disable_switch()
-            if self.frames[3].active == True:
-                self.frames[3].move_top()
+            if self.statistic_page.start_date != '' and self.statistic_page.end_date != '':
+                self.statistic_page.disable_switch()
+                if self.config_page.active == True:
+                    self.config_page.move_top()
 
     def switchConfigPage(self):
         any_other_active = False
