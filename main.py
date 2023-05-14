@@ -107,8 +107,8 @@ class FitnessHelper(tk.Tk):
                 if filename != '':
                     self.pick_date("Pick Date for Video")
                     self.video_page.date = self.temp_date
-                    self.video_page.disable_switch()
-                    if self.video_page.date == '':
+                    if self.video_page.date != '':
+                        self.video_page.toggle_visible()
                         if self.video_page.video_stopped() == True:
                             self.video_page.start_vid(filename)
             else:
