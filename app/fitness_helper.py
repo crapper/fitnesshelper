@@ -13,6 +13,7 @@ from .camera_page import *
 from .config_page import *
 from .statistic_page import *
 from .video_page import *
+from .tips_window import *
 
 class FitnessHelper(App):
     def __init__(self, *args, **kwargs):
@@ -47,9 +48,21 @@ class FitnessHelper(App):
         self.btn3.place(x= self.start_x+button_len/2, y=button_len*5)
         self.btn4 = tk.Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchStatisticPage(), state=tk.NORMAL)
         self.btn4.place(x= self.start_x+button_len/2, y=button_len*7)
-
+        self.CreateToolTip(self.btn1, text = "Camera Page Switch\n" "Cannot be used when:\n" "Weight is not initialize in config.")
+        self.CreateToolTip(self.btn2, text = "Video Page Switch\n" "Cannot be used when:\n" "Weight is not initialize in config.")
+        self.CreateToolTip(self.btn3, text = "Config Page Switch\n" "Cannot be used when:\n" "Camera/Video page is active.")
+        self.CreateToolTip(self.btn4, text = "Statistic Page Switch\n" "Cannot be used when:\n" "Video page is active.")
         self.update_frame()
         self.protocol("WM_DELETE_WINDOW", self.before_destroy)
+
+    def CreateToolTip(self, widget, text):
+        toolTip = TipWindow(widget)
+        def enter(event):
+            toolTip.showtip(text)
+        def leave(event):
+            toolTip.hidetip()
+        widget.bind('<Enter>', enter)
+        widget.bind('<Leave>', leave)
 
     def pick_date(self, title="Pick Date") -> str:
         temp_date = ''
