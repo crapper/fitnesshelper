@@ -10,3 +10,4 @@ from .types import *
 from .video_get import *
 from .video_page import *
 from .page import *
+from .tips_window import *
