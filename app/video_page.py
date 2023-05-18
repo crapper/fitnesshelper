@@ -157,7 +157,7 @@ class VideoPage(Page):
         return max(set(List), key = List.count)
 
     def update_frame(self):
-        if self.video_thread == None:
+        if self.active == False or self.video_thread == None:
             return
         if self.video_thread.stopped == False and self.frame_read != self.video_thread.total_frame+1:
             if len(self.video_thread.frame) != 0:

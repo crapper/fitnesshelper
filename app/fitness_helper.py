@@ -140,8 +140,8 @@ class FitnessHelper(App):
     def update_frame(self):
         start_time = time.time()
         
-        for page in self.pages:
-            page.update_frame()
+        self.video_page.update_frame()
+        self.camera_page.update_frame()
 
         wait_time = max(1, math.ceil(1000/self.expect_frame - (time.time()- start_time)/1000))
         self.after_keeper = self.after(wait_time, self.update_frame)
