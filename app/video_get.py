@@ -1,36 +1,34 @@
 import cv2
 import time
 import threading
+import numpy as np
 
 class VideoGet:
     def __init__(self, src, fps = 30):
         self.fps = fps
         self.src = src
-        self.stopped = True
-        self.stream = cv2.VideoCapture(self.src)
+        self.stream = cv2.VideoCapture()
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        (grabbed, frame) = self.stream.read()
-        self.grabbed = []
-        self.frame = []
-        self.grabbed.append(grabbed)
-        self.frame.append(frame)
+        self.grabbed = [True]
+        self.frame = [np.full((640, 480,3), 0, np.uint8)]
         self.currentframe = 0
         self.finished = False
-        if self.src != 0:
-            self.total_frame = int(self.stream.get(cv2.CAP_PROP_FRAME_COUNT)) 
-            self.fps_video = self.stream.get(cv2.CAP_PROP_FPS)
 
-    def start(self):    
-        self.stopped = False
-        # print(self.src)
+    def start(self):
         self.thread = threading.Thread(target=self.get, daemon = True)
         self.thread.start()
-        # self.thread.join()
         return self
 
     def get(self):
-        while not self.stopped and not self.finished:
+        if self.stream.isOpened() == False:
+            if self.src != 0:
+                self.stream.open(self.src)
+                self.total_frame = int(self.stream.get(cv2.CAP_PROP_FRAME_COUNT)) 
+                self.fps_video = self.stream.get(cv2.CAP_PROP_FPS)
+            else:
+                self.stream.open(0, cv2.CAP_DSHOW)
+        while self.stream.isOpened() and not self.finished:
             start_time = time.time()
             if (self.src != 0 and self.currentframe == self.total_frame):
                 self.finished = True
@@ -44,15 +42,18 @@ class VideoGet:
                 self.grabbed[0] = grabbed
                 self.frame[0] = frame
                 self.currentframe += 1
-            time.sleep(float(1/self.fps - (time.time() - start_time)))
+            time_taken = time.time() - start_time
+            sleep_time = float(1/self.fps - time_taken)
+            if sleep_time > 0:
+                time.sleep(sleep_time)
 
     def stop(self):
-        self.stopped = True
+        self.stream.release()
 
     def __del__(self):
         # stop thread
-        if self.stopped == False:
-            self.stopped = True
+        print("del")
+        if self.stream.isOpened() == False:
             self.thread.join()
         # release stream
         if self.stream.isOpened():

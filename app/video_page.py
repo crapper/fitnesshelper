@@ -159,7 +159,7 @@ class VideoPage(Page):
     def update_frame(self):
         if self.active == False or self.video_thread == None:
             return
-        if self.video_thread.stopped == False and self.frame_read != self.video_thread.total_frame+1:
+        if self.video_thread.stream.isOpened() and self.frame_read != self.video_thread.total_frame+1:
             if len(self.video_thread.frame) != 0:
                 ret, frame = self.video_thread.grabbed.pop(0), self.video_thread.frame.pop(0)
                 self.frame_read += 1
