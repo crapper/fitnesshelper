@@ -15,6 +15,7 @@ class App(tk.Tk):
         self.width = 1280
         self.height = 720
         self.weight = -1 # weight for calories calculation
+        self.model_complexity = 1
 
 class Page(tk.Frame):
     def __init__(self, parent: tk.Canvas, controller: App) -> None:

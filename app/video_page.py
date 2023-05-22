@@ -115,11 +115,11 @@ class VideoPage(Page):
         self.parent.coords(self.bar_fill, self.initial_x, y0, self.initial_x, y1)
         for item in self.panel:
             self.parent.itemconfig(item, state='hidden')
-        self.model.model.reset()
+        self.model.reset()
 
     def show_page(self):
         self.active = True
-
+        self.model.model_complexity = self.controller.model_complexity
         self.db_connector.date = self.date
         for item in self.panel:
             self.parent.itemconfig(item, state='normal')

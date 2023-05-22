@@ -30,7 +30,7 @@ class CameraPage(Page):
 
     def show_page(self):
         self.active = True
-
+        self.model.model_complexity = self.controller.model_complexity
         self.parent.itemconfig(self.cam, state='normal')
         self.start_vid()
 
@@ -59,7 +59,7 @@ class CameraPage(Page):
                     self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time, MET)
         
         self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
-        self.model.model.reset()
+        self.model.reset()
 
         self.hide_page()
         return True

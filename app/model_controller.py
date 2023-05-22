@@ -11,7 +11,8 @@ class ModelController:
         self.draw = md.solutions.drawing_utils
         self.draw_style = md.solutions.drawing_styles
         self.pose = md.solutions.pose
-        self.model = self.pose.Pose(min_detection_confidence = 0.5, min_tracking_confidence = 0.5, model_complexity = 1)
+        self.model_complexity = 1
+        self.model = [self.pose.Pose(min_detection_confidence = 0.5, min_tracking_confidence = 0.5, model_complexity = 0), self.pose.Pose(min_detection_confidence = 0.5, min_tracking_confidence = 0.5, model_complexity = 1), self.pose.Pose(min_detection_confidence = 0.5, min_tracking_confidence = 0.5, model_complexity = 2)]
         self.result = []
         self.angle_for_count = -1
         self.prediction = Activity.non
@@ -69,7 +70,8 @@ class ModelController:
 
     def detect(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = self.model.process(frame)
+        print(self.model_complexity)
+        results = self.model[self.model_complexity].process(frame)
         h, w, c = frame.shape
         key_points = []
         if results.pose_landmarks:
@@ -121,3 +123,7 @@ class ModelController:
         else:
             self.init_frame()
         return frame
+
+    def reset(self):
+        self.init_frame()
+        self.model[self.model_complexity].reset()

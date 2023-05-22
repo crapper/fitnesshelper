@@ -1,5 +1,4 @@
 import tkinter as tk
-import tkinter.font as tkFont
 
 from .page import *
 
@@ -21,6 +20,16 @@ class ConfigPage(Page):
         self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_weight, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
         self.weight_entry.place_forget()
 
+        #Dropdowm menu for model complexity selection
+        self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight), text="ModelComplexity: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
+        width_model_complexity, height_model_complexity = self.get_width_height(self.panel[3])
+        options = [0, 1, 2]
+        clicked = tk.IntVar()
+        clicked.set(options[1])
+        self.drop_model_complexity = tk.OptionMenu(self.controller, clicked , *options)
+        self.drop_model_complexity.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_complexity, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight))
+        self.drop_model_complexity.place_forget()
+
         self.pixel = tk.PhotoImage(width=1, height=1)
         self.save_btn = tk.Button(self.controller, image=self.pixel, text="Save", state='normal', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save(int(self.weight_entry.get())))
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
@@ -29,8 +38,14 @@ class ConfigPage(Page):
         self.hide_page()
 
     def save(self, weight):
+        message = ""
+        if self.controller.weight != weight:
+            message += "Weight update successful to "+str(weight)+"\n"
+        if self.controller.model_complexity != int(self.drop_model_complexity.cget("text")):
+            message += "Model Complexity update successful to "+self.drop_model_complexity.cget("text")+"\n"
         self.controller.weight = weight
-        tk.messagebox.showinfo("Success", "Weight update successful to "+str(weight))
+        self.controller.model_complexity = int(self.drop_model_complexity.cget("text"))
+        tk.messagebox.showinfo("Success", message)
         self.toggle_visible()
 
     def get_width_height(self, id):
@@ -56,6 +71,8 @@ class ConfigPage(Page):
         
         width_weight, height_weight = self.get_width_height(self.panel[2])
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
+        width_model_complexity, height_model_complexity = self.get_width_height(self.panel[3])
+        self.drop_model_complexity.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_complexity, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight))
         self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_weight, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
 
     def hide_page(self):
@@ -65,6 +82,7 @@ class ConfigPage(Page):
             self.parent.itemconfig(item, state='hidden')
         self.save_btn.place_forget()
         self.weight_entry.place_forget()
+        self.drop_model_complexity.place_forget()
 
     def request_open_page(self):
         if self.active:
