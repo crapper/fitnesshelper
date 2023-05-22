@@ -16,10 +16,9 @@ class ConfigPage(Page):
         self.panel.append(self.parent.create_rectangle(self.BgTop_x, self.BgTop_y,self.BgDown_x,self.BgDown_y,fill='white',outline='blue', width = 5)) #[1] : widget background panel rectangle
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1), text="Weight: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         v_cmd = (self.register(self.validate_entry))
-        size = tkFont.Font(size=16, family='Helvetica').measure('Weight: ')
-
+        width_weight, height_weight = self.get_width_height(self.panel[2])
         self.weight_entry = tk.Entry(self.controller, validate='all', validatecommand=(v_cmd, '%P'))
-        self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + size, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
+        self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_weight, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
         self.weight_entry.place_forget()
 
         self.pixel = tk.PhotoImage(width=1, height=1)
@@ -33,6 +32,12 @@ class ConfigPage(Page):
         self.controller.weight = weight
         tk.messagebox.showinfo("Success", "Weight update successful to "+str(weight))
         self.toggle_visible()
+
+    def get_width_height(self, id):
+        bounds = self.parent.bbox(id)
+        width = bounds[2] - bounds[0]
+        height = bounds[3] - bounds[1]
+        return width, height
 
     def validate_entry(self, P):
         try:
@@ -48,9 +53,10 @@ class ConfigPage(Page):
         for item in self.panel:
             self.parent.itemconfig(item, state='normal')
             self.parent.tag_raise(item, 'all')
-        size = tkFont.Font(size=16, family='Helvetica').measure('Weight: ')
+        
+        width_weight, height_weight = self.get_width_height(self.panel[2])
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
-        self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + size, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
+        self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_weight, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
 
     def hide_page(self):
         self.active = False
