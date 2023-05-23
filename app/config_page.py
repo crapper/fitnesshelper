@@ -25,9 +25,8 @@ class ConfigPage(Page):
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight), text="ModelComplexity: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         width_model_complexity, height_model_complexity = self.get_width_height(self.panel[3])
         options = [0, 1, 2]
-        clicked = tk.IntVar()
-        clicked.set(options[1])
         self.drop_model_complexity = tk.ttk.Combobox(self.controller, values=options, state="readonly", width=2, font=("Helvetica", 10))
+        self.drop_model_complexity.current(1)
         self.drop_model_complexity.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_complexity, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight))
         self.drop_model_complexity.place_forget()
 
@@ -48,25 +47,27 @@ class ConfigPage(Page):
         self.drag_track_conf.place_forget()
 
         self.pixel = tk.PhotoImage(width=1, height=1)
-        self.save_btn = tk.Button(self.controller, image=self.pixel, text="Save", state='normal', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save(int(self.weight_entry.get())))
+        self.save_btn = tk.Button(self.controller, image=self.pixel, text="Save", state='normal', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save())
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
         
         self.hide_page()
 
-    def save(self, weight):
+    def save(self):
         message = ""
-        if self.controller.weight != weight:
-            message += "Weight update successful to "+str(weight)+"\n"
-        if self.controller.model_complexity != int(self.drop_model_complexity.cget("text")):
-            message += "Model Complexity update successful to "+self.drop_model_complexity.cget("text")+"\n"
+        if self.weight_entry.get() != "" and self.controller.weight != int(self.weight_entry.get()):
+            self.controller.weight = int(self.weight_entry.get())
+            message += "Weight update successful to "+str(self.weight_entry.get())+"\n"
+        if self.controller.model_complexity != int(self.drop_model_complexity.get()):
+            self.controller.model_complexity = int(self.drop_model_complexity.get())
+            message += "Model Complexity update successful to "+self.drop_model_complexity.get()+"\n"
         if self.controller.model_conf != self.drag_model_conf.get():
+            self.controller.model_conf = self.drag_model_conf.get()
             message += "Model Confidence update successful to "+str(self.drag_model_conf.get())+"\n"
         if self.controller.track_conf != self.drag_track_conf.get():
+            self.controller.track_conf = self.drag_track_conf.get()
             message += "Tracking Confidence update successful to "+str(self.drag_track_conf.get())+"\n"
-        self.controller.weight = weight
-        self.controller.model_complexity = int(self.drop_model_complexity.cget("text"))
-        self.controller.model_conf = self.drag_model_conf.get()
-        self.controller.track_conf = self.drag_track_conf.get()
+        if message == "":
+            message = "No update"
         tk.messagebox.showinfo("Success", message)
         self.toggle_visible()
 
