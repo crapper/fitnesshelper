@@ -29,8 +29,8 @@ class CameraPage(Page):
         self.hide_page()
 
     def show_page(self):
+        self.model.set_model(self.controller.model_complexity, self.controller.model_conf, self.controller.track_conf)
         self.active = True
-        self.model.model_complexity = self.controller.model_complexity
         self.parent.itemconfig(self.cam, state='normal')
         self.start_vid()
 
