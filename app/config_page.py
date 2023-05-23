@@ -88,15 +88,15 @@ class ConfigPage(Page):
 
         #Drag bar for tracking confidence
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16), text="TrackingConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW))
+        width_track_conf, height_track_conf = self.get_width_height(self.panel[5])
         self.drag_track_conf = NewScale(self.controller, from_=0, to=1, orient=tk.HORIZONTAL, tickinterval=0.1, resolution =0.01, width=5)
         self.drag_track_conf.set(0.5)
-        self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16+16))
+        self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16))
         self.drag_track_conf.place_forget()
 
         self.pixel = tk.PhotoImage(width=1, height=1)
         self.save_btn = tk.Button(self.controller, image=self.pixel, text="Save", state='normal', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save(int(self.weight_entry.get())))
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
-        self.save_btn.place_forget()
         
         self.hide_page()
 
@@ -145,7 +145,8 @@ class ConfigPage(Page):
         self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_weight, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
         width_model_conf, height_model_conf = self.get_width_height(self.panel[4])
         self.drag_model_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity))
-        self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16+16))
+        width_track_conf, height_track_conf = self.get_width_height(self.panel[5])
+        self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16))
 
     def hide_page(self):
         self.active = False
