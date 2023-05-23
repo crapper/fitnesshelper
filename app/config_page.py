@@ -5,7 +5,7 @@ from .tips_window import *
 
 tips = None
 
-def Create_Model_Track_Tip(widget, text):
+def Update_Model_Track_Tip(widget, text):
     global tips
     if tips != None:
         tips.hidetip()
@@ -14,6 +14,23 @@ def Create_Model_Track_Tip(widget, text):
     tips.showtip(text + value)
     def leave(event):
         tips.hidetip()
+    widget.bind('<Leave>', leave)
+
+def Create_Model_Track_Tip(widget, text):
+    def enter(event):
+        global tips
+        if tips != None:
+            tips.hidetip()
+        tips = TipWindow(widget)
+        value = str(round(float(widget.get()), 2))
+        tips.showtip(text + value)
+    def leave(event):
+        global tips
+        if tips != None:
+            tips.hidetip()
+        tips = TipWindow(widget)
+        tips.hidetip()
+    widget.bind('<Enter>', enter)
     widget.bind('<Leave>', leave)
 
 class ConfigPage(Page):
@@ -47,16 +64,18 @@ class ConfigPage(Page):
         #Drag bar for model confidence
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity), text="ModelConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         width_model_conf, height_model_conf = self.get_width_height(self.panel[4])
-        self.drag_model_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Create_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: "))
+        self.drag_model_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Update_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: "))
         self.drag_model_conf.set(0.5)
+        Create_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: ")
         self.drag_model_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity))
         self.drag_model_conf.place_forget()
 
         #Drag bar for tracking confidence
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16), text="TrackingConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW))
         width_track_conf, height_track_conf = self.get_width_height(self.panel[5])
-        self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Create_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "))
+        self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Update_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "))
         self.drag_track_conf.set(0.5)
+        Create_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: ")
         self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16))
         self.drag_track_conf.place_forget()
 
