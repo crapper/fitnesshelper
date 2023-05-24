@@ -71,13 +71,22 @@ class ConfigPage(Page):
         self.drag_model_conf.place_forget()
 
         #Drag bar for tracking confidence
-        self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16), text="TrackingConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW))
+        self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10), text="TrackingConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW))
         width_track_conf, height_track_conf = self.get_width_height(self.panel[5])
         self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Update_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "))
         self.drag_track_conf.set(0.5)
         Create_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: ")
-        self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16))
+        self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10))
         self.drag_track_conf.place_forget()
+
+        #Dropdown menu for statistic unit selection
+        self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+height_track_conf+16), text="StatisticUnit: ", font=("Helvetica", 16), fill="black", anchor=tk.NW))
+        width_statistic_unit, height_statistic_unit = self.get_width_height(self.panel[6])
+        options = ['Day', 'Month', 'Year']
+        self.drop_statistic_unit = tk.ttk.Combobox(self.controller, values=options, state="readonly", font=("Helvetica", 10))
+        self.drop_statistic_unit.current(0)
+        self.drop_statistic_unit.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_statistic_unit, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+height_track_conf+18))
+        self.drop_statistic_unit.place_forget()
 
         self.pixel = tk.PhotoImage(width=1, height=1)
         self.save_btn = tk.Button(self.controller, image=self.pixel, text="Save", state='normal', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save())
@@ -99,6 +108,10 @@ class ConfigPage(Page):
         if self.controller.track_conf != round(float(self.drag_track_conf.get()), 2):
             self.controller.track_conf = round(float(self.drag_track_conf.get()), 2)
             message += "Tracking Confidence update successful to "+str(round(float(self.drag_track_conf.get()), 2))+"\n"
+        if self.controller.statistic_unit != self.drop_statistic_unit.current():
+            self.controller.statistic_unit = self.drop_statistic_unit.current()
+            message += "Statistic Unit update successful to "+self.drop_statistic_unit.get()+"\n"
+            self.controller.statistic_page.update_plot()
         if message == "":
             message = "No update"
         tk.messagebox.showinfo("Success", message)
@@ -133,7 +146,9 @@ class ConfigPage(Page):
         width_model_conf, height_model_conf = self.get_width_height(self.panel[4])
         self.drag_model_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity))
         width_track_conf, height_track_conf = self.get_width_height(self.panel[5])
-        self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+16))
+        self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10))
+        width_statistic_unit, height_statistic_unit = self.get_width_height(self.panel[6])
+        self.drop_statistic_unit.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_statistic_unit, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+height_track_conf+18))
 
     def hide_page(self):
         self.active = False
@@ -145,6 +160,7 @@ class ConfigPage(Page):
         self.drop_model_complexity.place_forget()
         self.drag_model_conf.place_forget()
         self.drag_track_conf.place_forget()
+        self.drop_statistic_unit.place_forget()
 
     def request_open_page(self):
         if self.active:

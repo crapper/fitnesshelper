@@ -14,14 +14,14 @@ class StatisticPage(Page):
         Page.__init__(self, parent, controller)
         w = int(self.controller.width * 0.9)
         h = self.controller.height
-        blank = np.full((h, w,3), 255, np.uint8)
-        self.img = Image.fromarray(blank)
+        self.blank = np.full((h, w,3), 0, np.uint8)
+        self.img = Image.fromarray(self.blank)
         self.img_tk = ImageTk.PhotoImage(image=self.img) 
         self.cam = parent.create_image(0,0, image=self.img_tk, anchor=tk.NW)
         self.db_connector = SQLconnector()
         self.start_date = ""
         self.end_date = ""
-        self.plot_graph_list = []
+        self.plot_graph_list = [self.blank.copy(), self.blank.copy(), self.blank.copy(), self.blank.copy()]
         self.state = 0
         self.left_btn = tk.Button(self.controller, text="<", command=lambda: self.change_state(-1))
         self.left_btn.place(x=0, y=h/2)
@@ -36,17 +36,19 @@ class StatisticPage(Page):
         self.state = (self.state + state) % 4
         self.setCamImg(self.plot_graph_list[self.state])
 
+    def update_plot(self):
+        self.plot_graph_list[0] = self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date), "Calories Trend for all activities")
+        self.plot_graph_list[1] = self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "pushup"), "Calories Trend for pushup")
+        self.plot_graph_list[2] = self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "situp"), "Calories Trend for situp")
+        self.plot_graph_list[3] = self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "squat"), "Calories Trend for squat")
+        self.setCamImg(self.plot_graph_list[self.state])
+
     def show_page(self):
         self.active = True
 
         self.left_btn.place(x=0, y=self.controller.height/2)
         self.right_btn.place(x=0, y=self.controller.height/2+100)
-        self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date), "Calories Trend for all activities"))
-        self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "pushup"), "Calories Trend for pushup"))
-        self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "situp"), "Calories Trend for situp"))
-        self.plot_graph_list.append(self.list_to_img(self.db_connector.extract_calories_list(self.start_date, self.end_date, "squat"), "Calories Trend for squat"))
-        self.setCamImg(self.plot_graph_list[self.state])
-
+        self.update_plot()
         self.parent.itemconfig(self.cam, state='normal')
 
     def hide_page(self):
@@ -55,7 +57,7 @@ class StatisticPage(Page):
         self.start_date = ""
         self.end_date = ""
         self.state = 0
-        self.plot_graph_list = []
+        self.plot_graph_list = [self.blank.copy(), self.blank.copy(), self.blank.copy(), self.blank.copy()]
         self.left_btn.place_forget()
         self.right_btn.place_forget()
         w = int(self.controller.width * 0.9)
@@ -94,7 +96,7 @@ class StatisticPage(Page):
             dt = datetime.datetime.strptime(date_string, '%d-%m-%Y')
             temp_found = False
             for i in range(len(dateMETlist)):
-                if dt == dateMETlist[i][0]:
+                if (self.controller.statistic_unit == 0 and dt == dateMETlist[i][0]) or (self.controller.statistic_unit == 1 and dt.month == dateMETlist[i][0].month and dt.year == dateMETlist[i][0].year) or (self.controller.statistic_unit == 2 and dt.year == dateMETlist[i][0].year):
                     dateMETlist[i][1] += k[5]
                     temp_found = True
                     break
@@ -114,7 +116,12 @@ class StatisticPage(Page):
         plt.ylabel("Calories spent")
         plt.xlabel("Date")
         plt.title(title)
-        myFmt = DateFormatter("%Y-%m-%d")
+        if self.controller.statistic_unit == 0:
+            myFmt = DateFormatter("%Y-%m-%d")
+        elif self.controller.statistic_unit == 1:
+            myFmt = DateFormatter("%Y-%m")
+        else:
+            myFmt = DateFormatter("%Y")
         ax.xaxis.set_major_formatter(myFmt)
         plt.xticks(date_list)
         fig.autofmt_xdate()
