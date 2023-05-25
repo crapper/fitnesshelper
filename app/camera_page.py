@@ -60,6 +60,7 @@ class CameraPage(Page):
                     self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time, MET)
         
         self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
+        self.offset_non_frame = []
         self.model.reset()
 
         self.hide_page()

@@ -117,6 +117,7 @@ class VideoPage(Page):
         for item in self.panel:
             self.parent.itemconfig(item, state='hidden')
         self.model.reset()
+        self.offset_non_frame = []
 
     def show_page(self):
         self.model.set_model(self.controller.model_complexity, self.controller.model_conf, self.controller.track_conf)
