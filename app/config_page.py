@@ -48,11 +48,13 @@ class ConfigPage(Page):
         self.initvalue.set(0.5)
         self.initvalue2 = tk.DoubleVar()
         self.initvalue2.set(0.5)
+        self.entry_text = tk.StringVar()
+        self.entry_text.set("")
 
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1), text="Weight: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         v_cmd = (self.register(self.validate_entry))
         width_weight, height_weight = self.get_width_height(self.panel[2])
-        self.weight_entry = tk.Entry(self.controller, validate='all', validatecommand=(v_cmd, '%P'))
+        self.weight_entry = tk.Entry(self.controller, validate='all', validatecommand=(v_cmd, '%P'), textvariable=self.entry_text)
         self.weight_entry.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_weight, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1))
         self.weight_entry.place_forget()
 
@@ -100,7 +102,8 @@ class ConfigPage(Page):
         message = ""
         if self.weight_entry.get() != "" and self.controller.weight != int(self.weight_entry.get()):
             self.controller.weight = int(self.weight_entry.get())
-            message += "Weight update successful to "+str(self.weight_entry.get())+"\n"
+            message += "Weight update successful to "+str(int(self.weight_entry.get()))+"\n"
+            self.entry_text.set(str(int(self.weight_entry.get())))
         if self.controller.model_complexity != int(self.drop_model_complexity.get()):
             self.controller.model_complexity = int(self.drop_model_complexity.get())
             message += "Model Complexity update successful to "+self.drop_model_complexity.get()+"\n"
