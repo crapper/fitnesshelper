@@ -46,6 +46,8 @@ class ConfigPage(Page):
         self.panel.append(self.parent.create_rectangle(self.BgTop_x, self.BgTop_y,self.BgDown_x,self.BgDown_y,fill='white',outline='blue', width = 5)) #[1] : widget background panel rectangle
         self.initvalue = tk.DoubleVar()
         self.initvalue.set(0.5)
+        self.initvalue2 = tk.DoubleVar()
+        self.initvalue2.set(0.5)
 
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1), text="Weight: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         v_cmd = (self.register(self.validate_entry))
@@ -74,7 +76,7 @@ class ConfigPage(Page):
         #Drag bar for tracking confidence
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10), text="TrackingConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW))
         width_track_conf, height_track_conf = self.get_width_height(self.panel[5])
-        self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Update_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "), variable=self.initvalue)
+        self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Update_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "), variable=self.initvalue2)
         Create_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: ")
         self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10))
         self.drag_track_conf.place_forget()
