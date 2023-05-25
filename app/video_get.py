@@ -52,7 +52,6 @@ class VideoGet:
 
     def __del__(self):
         # stop thread
-        print("del")
         if self.stream.isOpened() == False:
             self.thread.join()
         # release stream
