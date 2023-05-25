@@ -23,6 +23,7 @@ class VideoPage(Page):
         self.panel.append(self.parent.create_polygon(list(self.shape_tri_pointer.values())[0],fill='white',outline='green', width = 5))#[0] : widget background panel triangle
         self.panel.append(self.parent.create_rectangle(self.BgTop_x, self.BgTop_y,self.BgDown_x,self.BgDown_y,fill='white',outline='green', width = 5)) #[1] : widget background panel rectangle
         self.db_connector = SQLconnector()
+        self.METlist = [3.8, 5.5, 8.0]
         blank = np.full((int((self.BgDown_y-self.BgTop_y)*0.8/2), int((self.BgDown_x-self.BgTop_x)*0.8),3), 0, np.uint8)
         self.img = Image.fromarray(blank)
         self.img_tk = ImageTk.PhotoImage(image=self.img) 
@@ -62,7 +63,7 @@ class VideoPage(Page):
     def save(self):
         for p in range(len(self.counter_list)):
             if self.counter_list[p].get_count() > 0:
-                MET = 3.8 * 3.5 * self.controller.weight / 200 * (self.counter_list[p].total_time/self.video_thread.fps_video/ 60)
+                MET = self.METlist[p] * 3.5 * self.controller.weight / 200 * (self.counter_list[p].total_time/self.video_thread.fps_video/ 60)
                 self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time/self.video_thread.fps_video, MET)
         self.stop_vid()
         self.hide_page()

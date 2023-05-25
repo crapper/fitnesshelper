@@ -22,6 +22,7 @@ class CameraPage(Page):
         self.video_thread = VideoGet(0, 20)
         self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
         self.db_connector = SQLconnector()
+        self.METlist = [3.8, 5.5, 8.0]
         self.counter_list[0].peak_valley_count = 10
         self.counter_list[0].total_time = 100
         self.offset_non_frame = []
@@ -55,7 +56,7 @@ class CameraPage(Page):
         if msg_box == 'yes':
             for p in range(len(self.counter_list)):
                 if self.counter_list[p].get_count() > 0:
-                    MET = 3.8 * 3.5 * self.controller.weight / 200 * self.counter_list[p].total_time / 60
+                    MET = self.METlist[p] * 3.5 * self.controller.weight / 200 * self.counter_list[p].total_time / 60
                     self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time, MET)
         
         self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
