@@ -104,12 +104,18 @@ class ModelController:
                     mid3 = [mid2[0], 0]
                     angle_classify_squat2 = self.angle_cal(mid1, mid2, mid3)
                 self.prediction = self.predict(angle_classify_pushup, face_classify_pushup2, angle_classify_situp, angle_classify_situp2, angle_classify_squat, angle_classify_squat2)               
-                if self.prediction == Activity.pushup:
+                if self.prediction == Activity.pushup and self.point_side == PointView.right:
                     self.angle_for_count = self.angle_cal(key_points[12], key_points[14], key_points[16])
-                elif self.prediction == Activity.situp:
+                elif self.prediction == Activity.pushup and self.point_side == PointView.left:
+                    self.angle_for_count = self.angle_cal(key_points[11], key_points[13], key_points[15])
+                elif self.prediction == Activity.situp and self.point_side == PointView.right:
                     self.angle_for_count = self.angle_cal(key_points[12], key_points[24], key_points[26])
-                elif self.prediction == Activity.squat:
+                elif self.prediction == Activity.situp and self.point_side == PointView.left:
+                    self.angle_for_count = self.angle_cal(key_points[11], key_points[23], key_points[25])
+                elif self.prediction == Activity.squat and self.point_side == PointView.right:
                     self.angle_for_count = self.angle_cal(key_points[24], key_points[26], [key_points[26][0], 0])
+                elif self.prediction == Activity.squat and self.point_side == PointView.left:
+                    self.angle_for_count = self.angle_cal(key_points[23], key_points[25], [key_points[25][0], 0])
                 else:
                     self.angle_for_count = -1
             else:
