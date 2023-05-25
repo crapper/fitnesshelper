@@ -22,7 +22,6 @@ def Create_Model_Track_Tip(widget, text):
         if tips != None:
             tips.hidetip()
         tips = TipWindow(widget)
-        print("2")
         value = str(round(float(widget.get()), 2))
         tips.showtip(text + value)
     def leave(event):
@@ -30,7 +29,6 @@ def Create_Model_Track_Tip(widget, text):
         if tips != None:
             tips.hidetip()
         tips = TipWindow(widget)
-        print("3")
         tips.hidetip()
     widget.bind('<Enter>', enter)
     widget.bind('<Leave>', leave)
