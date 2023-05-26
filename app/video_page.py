@@ -108,6 +108,7 @@ class VideoPage(Page):
         self.save_btn["state"] = "disable"
         self.save_btn.place_forget()
         self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
+        self.update_count()
         self.db_connector = SQLconnector()
         if self.video_thread != None:
             self.video_thread = None
