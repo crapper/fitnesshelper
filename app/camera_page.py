@@ -99,8 +99,8 @@ class CameraPage(Page):
                 img = self.model.detect(frame)
                 if self.model.prediction != Activity.non:
                     self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, time.time())
-                self.offset_non_frame.append(self.model.prediction)
-                if len(self.offset_non_frame) >= 100:
+                    self.offset_non_frame.append(self.model.prediction)
+                if len(self.offset_non_frame) >= 200:
                     max_appear = self.most_frequent(self.offset_non_frame)
                     setlist = list(set(self.offset_non_frame))
                     setlist.remove(max_appear)
