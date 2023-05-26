@@ -100,7 +100,7 @@ class CameraPage(Page):
                 if self.model.prediction != Activity.non:
                     self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, time.time())
                 self.offset_non_frame.append(self.model.prediction)
-                if len(self.offset_non_frame) >= 10:
+                if len(self.offset_non_frame) >= 100:
                     max_appear = self.most_frequent(self.offset_non_frame)
                     setlist = list(set(self.offset_non_frame))
                     setlist.remove(max_appear)
@@ -110,6 +110,7 @@ class CameraPage(Page):
                             if self.counter_list[i].peak_valley_count % 2 == 1:
                                 self.counter_list[i].peak_valley_count -= 1
                             self.counter_list[i].temp_count_time = 0
+                    self.offset_non_frame = []
                 text = "Pushup: " + str(self.counter_list[0].get_count()) + " Situp: " + str(self.counter_list[1].get_count()) + " Squat: " + str(self.counter_list[2].get_count())
                 cv2.putText(img, text, (10, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0,0,255), 2)
                 self.setCamImg(img)

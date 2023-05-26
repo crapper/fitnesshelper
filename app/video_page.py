@@ -91,7 +91,7 @@ class VideoPage(Page):
         if self.video_thread != None:
             self.video_thread.start()
         elif source != None:
-            self.video_thread = VideoGet(source, 15)
+            self.video_thread = VideoGet(source, 25)
             self.video_thread.start()
 
     def stop_vid(self):
@@ -167,11 +167,12 @@ class VideoPage(Page):
                 self.frame_read += 1
                 if ret:
                     img = self.model.detect(frame)
+                    print(self.model.prediction)
                     if self.model.prediction != Activity.non:
                         self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, self.frame_read)
                         self.update_count()
                     self.offset_non_frame.append(self.model.prediction)
-                    if len(self.offset_non_frame) >= 10:
+                    if len(self.offset_non_frame) >= 100:
                         max_appear = self.most_frequent(self.offset_non_frame)
                         setlist = list(set(self.offset_non_frame))
                         setlist.remove(max_appear)
@@ -181,6 +182,7 @@ class VideoPage(Page):
                                 if self.counter_list[i].peak_valley_count % 2 == 1:
                                     self.counter_list[i].peak_valley_count -= 1
                                 self.counter_list[i].temp_count_time = 0
+                        self.offset_non_frame = []
                     self.setCamImg(img)
                     x0, y0, x1, y1 = self.parent.coords(self.bar_fill)
                     x1 = self.initial_x + int(self.total * self.frame_read/self.video_thread.total_frame)
