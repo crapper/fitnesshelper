@@ -78,12 +78,11 @@ class FitnessHelper(App):
         year = int(datetime.datetime.today().strftime('%Y'))
         month = int(datetime.datetime.today().strftime('%m'))
         day = int(datetime.datetime.today().strftime('%d'))
-        cal = tkc.Calendar(date_win, selectmode="day", year=year, month=month, day=day, date_pattern='dd-MM-yyyy')
+        cal = tkc.Calendar(date_win, selectmode="day", year=year, month=month, day=day, date_pattern='yyyy-mm-dd')
         cal.pack(pady=20)
         ok_button = tk.Button(date_win, text="OK", command=lambda: update_date(date_win, cal))
         ok_button.pack(pady=20)
         date_win.wait_window()
-
         return temp_date
 
     def switchCameraPage(self):

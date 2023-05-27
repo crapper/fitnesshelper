@@ -4,13 +4,15 @@ import os
 
 class SQLconnector:
     def __init__(self):
-        self.date = datetime.datetime.today().strftime('%d-%m-%Y')
+        now = datetime.datetime.now()
+        self.date = now.date()
         self.db_path = os.path.join(os.path.realpath(__file__), r"..\Counter.db")
 
     def save(self, classname, counting, weight, time, MET):        
         con = sqlite3.connect(self.db_path)
         cur = con.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS counting(class, date, count, weight, time, MET)")
+        cur.execute("CREATE TABLE IF NOT EXISTS counting(class TEXT, date TEXT, count INTEGER, weight REAL, time REAL, MET REAL)")
+        self.date = datetime.datetime.strptime(self.date, '%Y-%m-%d').strftime('%Y-%m-%d')
         input_arg = (classname, self.date, counting, weight, time, MET)
         res = cur.execute("SELECT * FROM counting where class = ? and date = ?", (classname, self.date))
         list_return = res.fetchall()
@@ -26,7 +28,9 @@ class SQLconnector:
     def extract_calories_list(self, start_date, end_date, classname = ""):
         con = sqlite3.connect(self.db_path)
         cur = con.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS counting(class, date, count, weight, time, MET)")
+        cur.execute("CREATE TABLE IF NOT EXISTS counting(class TEXT, date TEXT, count INTEGER, weight REAL, time REAL, MET REAL)")
+        start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%Y-%m-%d')
+        end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%Y-%m-%d')
         if classname == "":
             res = cur.execute("SELECT * FROM counting where date BETWEEN ? and ?", (start_date, end_date))
         else:

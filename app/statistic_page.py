@@ -71,8 +71,8 @@ class StatisticPage(Page):
         if self.active:
             return True
 
-        dt = datetime.datetime.strptime(self.start_date, '%d-%m-%Y').date()
-        dt2 = datetime.datetime.strptime(self.end_date, '%d-%m-%Y').date()
+        dt = datetime.datetime.strptime(self.start_date, '%Y-%m-%d').date()
+        dt2 = datetime.datetime.strptime(self.end_date, '%Y-%m-%d').date()
         if dt > dt2:
             tk.messagebox.showinfo('Warning', 'End date must be later than start date')
             self.start_date = ""
@@ -93,7 +93,7 @@ class StatisticPage(Page):
         dateMETlist = []
         for k in lst:
             date_string = k[1]
-            dt = datetime.datetime.strptime(date_string, '%d-%m-%Y')
+            dt = datetime.datetime.strptime(date_string, '%Y-%m-%d')
             temp_found = False
             for i in range(len(dateMETlist)):
                 if (self.controller.statistic_unit == 0 and dt == dateMETlist[i][0]) or (self.controller.statistic_unit == 1 and dt.month == dateMETlist[i][0].month and dt.year == dateMETlist[i][0].year) or (self.controller.statistic_unit == 2 and dt.year == dateMETlist[i][0].year):
@@ -136,6 +136,7 @@ class StatisticPage(Page):
         img = cv2.resize(img,(1280, 840))
         # img is rgb, convert to opencv's default bgr
         img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
+        plt.clf()
         return img
 
     def setCamImg(self, img_np: cv2.Mat):
