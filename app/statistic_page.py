@@ -109,9 +109,14 @@ class StatisticPage(Page):
 
         for i in dateMETlist:
             date_list.append(i[0])
-            METlist.append(i[1])
+            METlist.append(round(float(i[1]),2))
         fig, ax = plt.subplots()
-        ax.plot(date_list,METlist, marker="o",markersize=10, markeredgecolor="red", markerfacecolor="green")
+        ax.plot(date_list,METlist, marker="o",markersize=5, markeredgecolor="red", markerfacecolor="green")
+        
+        # add text labels for each point
+        for x, y, val in zip(date_list, METlist, METlist):
+            ax.annotate(str(val), xy=(x, y), xytext=(0, 10), textcoords='offset points', ha='center', va='bottom', fontsize=8)
+        
         plt.grid()
         plt.ylabel("Calories spent")
         plt.xlabel("Date")
@@ -126,11 +131,9 @@ class StatisticPage(Page):
         plt.xticks(date_list)
         fig.autofmt_xdate()
         fig.canvas.draw()
-        plt.clf()
         img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
         img  = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
         img = cv2.resize(img,(1280, 840))
-
         # img is rgb, convert to opencv's default bgr
         img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
         return img
