@@ -16,7 +16,6 @@ class TestSQLconnector(unittest.TestCase):
         if os.path.exists(self.sql_conn.db_path):
             os.remove(self.sql_conn.db_path)
 
-
     def test_save(self):
         # Test that data is saved to the database
         classname = 'pushup'
@@ -47,8 +46,8 @@ class TestSQLconnector(unittest.TestCase):
         time = 60
         MET = 3
         self.sql_conn.save(classname, counting, weight, time, MET)
-        start_date = datetime.datetime.today().strftime('%d-%m-%Y')
-        end_date = datetime.datetime.today().strftime('%d-%m-%Y')
+        start_date = datetime.datetime.today().strftime('%Y-%m-%d')
+        end_date = datetime.datetime.today().strftime('%Y-%m-%d')
         result = self.sql_conn.extract_calories_list(start_date, end_date, classname)
         self.assertEqual(len(result), 1)
         row = result[0]
@@ -66,14 +65,14 @@ class TestSQLconnector(unittest.TestCase):
         weight = 5
         time = 60
         MET = 3
-        self.sql_conn.date = '01-01-2020'
+        self.sql_conn.date = '2020-01-01'
         self.sql_conn.save(classname, counting, weight, time, MET)
-        start_date = datetime.datetime.today().strftime('%d-%m-%Y')
-        end_date = datetime.datetime.today().strftime('%d-%m-%Y')
+        start_date = datetime.datetime.today().strftime('%Y-%m-%d')
+        end_date = datetime.datetime.today().strftime('%Y-%m-%d')
         result = self.sql_conn.extract_calories_list(start_date, end_date, classname)
         self.assertEqual(len(result), 0)
-        start_date = '01-01-2020'
-        end_date = '01-01-2020'
+        start_date = '2020-01-01'
+        end_date = '2020-01-01'
         result = self.sql_conn.extract_calories_list(start_date, end_date, classname)
         self.assertEqual(len(result), 1)
         row = result[0]

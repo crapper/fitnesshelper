@@ -12,7 +12,10 @@ class SQLconnector:
         con = sqlite3.connect(self.db_path)
         cur = con.cursor()
         cur.execute("CREATE TABLE IF NOT EXISTS counting(class TEXT, date TEXT, count INTEGER, weight REAL, time REAL, MET REAL)")
-        self.date = datetime.datetime.strptime(self.date, '%Y-%m-%d').strftime('%Y-%m-%d')
+        if type(self.date) == datetime.date:
+            self.date = self.date.strftime('%Y-%m-%d')
+        else:
+            self.date = datetime.datetime.strptime(self.date, '%Y-%m-%d').strftime('%Y-%m-%d')
         input_arg = (classname, self.date, counting, weight, time, MET)
         res = cur.execute("SELECT * FROM counting where class = ? and date = ?", (classname, self.date))
         list_return = res.fetchall()
