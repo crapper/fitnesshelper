@@ -1,8 +1,9 @@
 import sys
-sys.path.insert(1, './')
-#
-import unittest
+import os
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(path)
 
+import unittest
 from app import *
 
 
