@@ -51,7 +51,7 @@ class TestModelController(unittest.TestCase):
         self.assertEqual(prediction, Activity.pushup)
 
         #(FTF), (TT), ()
-        pushup1 = 159
+        pushup1 = 140
         pushup2 = PointView.up
         situp1 = 79
         situp2 = 121
@@ -61,7 +61,7 @@ class TestModelController(unittest.TestCase):
         self.assertEqual(prediction, Activity.situp)
 
         #(FFT), (FF), (TT)
-        pushup1 = 159
+        pushup1 = 140
         pushup2 = PointView.down
         situp1 = 80
         situp2 = 120
@@ -71,7 +71,7 @@ class TestModelController(unittest.TestCase):
         self.assertEqual(prediction, Activity.squat)
 
         #(FFF), (FF), (FF)
-        pushup1 = 159
+        pushup1 = 140
         pushup2 = PointView.up
         situp1 = 80
         situp2 = 120
@@ -91,10 +91,24 @@ class TestModelController(unittest.TestCase):
         direction = self.mc.face_direction(p1, p2)
         self.assertEqual(direction, PointView.down)
 
-    # def test_detect(self):
-    #     frame = cv2.imread("test.jpg")
-    #     output = self.mc.detect(frame)
-    #     self.assertIsInstance(output, np.ndarray)
+    def test_detect(self):
+        path1 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/pushup.jpg'))
+        path2 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/situp.jpg'))
+        path3 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/squat.jpg'))
+        frame = cv2.imread(path1)
+        self.mc.detect(frame)
+        self.assertEqual(self.mc.prediction, Activity.pushup)
+
+        self.mc = ModelController()
+        frame = cv2.imread(path2)
+        self.mc.detect(frame)
+        self.assertEqual(self.mc.prediction, Activity.situp)
+
+        self.mc = ModelController()
+        frame = cv2.imread(path3)
+        self.mc.detect(frame)
+        self.assertEqual(self.mc.prediction, Activity.squat)
+
 
     def test_reset(self):
         self.mc.reset()
