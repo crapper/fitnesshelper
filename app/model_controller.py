@@ -51,7 +51,7 @@ class ModelController:
         prediction = Activity.non
         if pushup1 >=150 and squat1 >75 and pushup2 == PointView.down:
             prediction = Activity.pushup
-        elif situp1 < 80 and situp2 > 120:
+        elif situp1 < 85 and situp2 > 120:
             prediction = Activity.situp
         elif squat1 <= 45 and squat2 <= 45:
             prediction = Activity.squat
