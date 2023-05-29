@@ -115,6 +115,9 @@ class FitnessHelper(App):
             self.video_page.date = self.pick_date("Pick Date for Video")
             if self.video_page.date == '':
                 return
+            if datetime.datetime.strptime(self.video_page.date, '%Y-%m-%d') > datetime.datetime.today():
+                messagebox.showinfo('Warning', 'Please enter a date before today')
+                return
             self.video_page.request_open_page()
             self.video_page.start_vid(filename)
         else:
