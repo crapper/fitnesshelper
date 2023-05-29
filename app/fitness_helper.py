@@ -129,7 +129,7 @@ class FitnessHelper(App):
         if not self.statistic_page.active:
             self.statistic_page.start_date = self.pick_date("Pick Start Date for Statistic")
             self.statistic_page.end_date = self.pick_date("Pick End Date for Statistic")
-        if self.statistic_page.start_date != '' or self.statistic_page.end_date != '':
+        if self.statistic_page.start_date != '' and self.statistic_page.end_date != '':
             self.statistic_page.toggle_visible()
 
     def switchConfigPage(self):
