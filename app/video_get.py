@@ -14,6 +14,7 @@ class VideoGet:
         self.frame = [np.full((640, 480,3), 0, np.uint8)]
         self.currentframe = 0
         self.finished = False
+        self.total_frame = -1
 
     def start(self):
         self.thread = threading.Thread(target=self.get, daemon = True)
@@ -29,6 +30,7 @@ class VideoGet:
             else:
                 self.stream.open(0, cv2.CAP_DSHOW)
         while self.stream.isOpened() and not self.finished:
+            print("test")
             start_time = time.time()
             if (self.src != 0 and self.currentframe == self.total_frame):
                 self.finished = True
