@@ -9,6 +9,12 @@ from app import *
 
 class TestCounter(unittest.TestCase):
     def test_pushup_counter(self):
+        # Test Counter class
+        dummy = Counter()
+        dummy.isUp(0)
+        dummy.isDown(0)
+
+        # Start from up
         pc = PushupCounter()
         self.assertEqual(pc.classname, "pushup")
         self.assertTrue(pc.isDown(100))
@@ -21,7 +27,16 @@ class TestCounter(unittest.TestCase):
         pc.update_count(140, 3)
         self.assertEqual(pc.get_count(), 1)
 
+        # Start from down
+        pc = PushupCounter()
+        pc.update_count(140, 0)
+        pc.update_count(90, 1)
+        pc.update_count(140, 2)
+        pc.update_count(90, 3)
+        self.assertEqual(pc.get_count(), 1)
+
     def test_situp_counter(self):
+        # Start from up
         sc = SitupCounter()
         self.assertEqual(sc.classname, "situp")
         self.assertTrue(sc.isDown(90))
@@ -34,7 +49,16 @@ class TestCounter(unittest.TestCase):
         sc.update_count(60, 3)
         self.assertEqual(sc.get_count(), 1)
 
+        # Start from down
+        sc = SitupCounter()
+        sc.update_count(60, 0)
+        sc.update_count(100, 1)
+        sc.update_count(60, 2)
+        sc.update_count(100, 3)
+        self.assertEqual(sc.get_count(), 1)
+
     def test_squat_counter(self):
+        # Start from up
         sqc = SquatCounter()
         self.assertEqual(sqc.classname, "squat")
         self.assertTrue(sqc.isDown(70))
@@ -46,6 +70,16 @@ class TestCounter(unittest.TestCase):
         sqc.update_count(70, 2)
         sqc.update_count(40, 3)
         self.assertEqual(sqc.get_count(), 1)
+        
+        # Start from down
+        sqc = SquatCounter()
+        sqc.update_count(40, 0)
+        sqc.update_count(70, 1)
+        sqc.update_count(40, 2)
+        sqc.update_count(70, 3)
+        self.assertEqual(sqc.get_count(), 1)
+
+
 
 if __name__ == '__main__':
     unittest.main()

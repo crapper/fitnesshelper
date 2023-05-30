@@ -33,11 +33,27 @@ class TestModelController(unittest.TestCase):
         self.assertAlmostEqual(angle, 45.0)
 
     def test_side(self):
-        Nose = [0, 0, 0, 1]
-        L_shoulder = [1, 0, 0, 1]
-        R_shoulder = [-1, 0, 0, 1]
+        #point front
+        Nose = [0, 0, 1]
+        L_shoulder = [1, 0, 1]
+        R_shoulder = [-1, 0, 1]
         side = self.mc.side(Nose, L_shoulder, R_shoulder)
         self.assertEqual(side, PointView.front)
+
+        #point left
+        Nose = [0, 1, 1]
+        L_shoulder = [0, 0, 0]
+        R_shoulder = [1, 0, 1]
+        side = self.mc.side(Nose, L_shoulder, R_shoulder)
+        self.assertEqual(side, PointView.left)
+
+        #point right
+        Nose = [0, 1, 1]
+        L_shoulder = [0, 0, 1]
+        R_shoulder = [1, 0, 0]
+        side = self.mc.side(Nose, L_shoulder, R_shoulder)
+        self.assertEqual(side, PointView.right)
+
 
     def test_predict(self):
         #(TTT), (), ()
@@ -90,11 +106,17 @@ class TestModelController(unittest.TestCase):
         p2 = [0, 1]
         direction = self.mc.face_direction(p1, p2)
         self.assertEqual(direction, PointView.down)
+        p1 = [0, 1]
+        p2 = [0, 0]
+        direction = self.mc.face_direction(p1, p2)
+        self.assertEqual(direction, PointView.up)
 
     def test_detect(self):
         path1 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/pushup.jpg'))
         path2 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/situp.jpg'))
         path3 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/squat.jpg'))
+        path4 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/frontface.jpg'))
+        path5 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/testnon.png'))
         frame = cv2.imread(path1)
         self.mc.detect(frame)
         self.assertEqual(self.mc.prediction, Activity.pushup)
@@ -108,6 +130,39 @@ class TestModelController(unittest.TestCase):
         frame = cv2.imread(path3)
         self.mc.detect(frame)
         self.assertEqual(self.mc.prediction, Activity.squat)
+
+        self.mc = ModelController()
+        frame = cv2.imread(path1)
+        frame = cv2.flip(frame, 1)
+        self.mc.detect(frame)
+        self.assertEqual(self.mc.prediction, Activity.pushup)
+
+        self.mc = ModelController()
+        frame = cv2.imread(path2)
+        frame = cv2.flip(frame, 1)
+        self.mc.detect(frame)
+        self.assertEqual(self.mc.prediction, Activity.situp)
+
+        self.mc = ModelController()
+        frame = cv2.imread(path3)
+        frame = cv2.flip(frame, 1)
+        self.mc.detect(frame)
+        self.assertEqual(self.mc.prediction, Activity.squat)
+
+        self.mc = ModelController()
+        frame = cv2.imread(path4)
+        self.mc.detect(frame)
+        self.assertEqual(self.mc.prediction, Activity.non)
+
+        self.mc = ModelController()
+        self.mc.detect(np.full((640, 480, 3), 0, np.uint8))
+        self.assertEqual(self.mc.prediction, Activity.non)
+
+        self.mc = ModelController()
+        frame = cv2.imread(path5)
+        self.mc.detect(frame)
+        self.assertEqual(self.mc.prediction, Activity.non)
+        
 
 
     def test_reset(self):

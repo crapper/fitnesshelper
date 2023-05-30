@@ -30,7 +30,6 @@ class VideoGet:
             else:
                 self.stream.open(0, cv2.CAP_DSHOW)
         while self.stream.isOpened() and not self.finished:
-            print("test")
             start_time = time.time()
             if (self.src != 0 and self.currentframe == self.total_frame):
                 self.finished = True

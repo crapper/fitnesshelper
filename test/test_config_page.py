@@ -1,7 +1,5 @@
-from collections.abc import Callable
 import sys
 import os
-from typing import Any
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(path)
 
