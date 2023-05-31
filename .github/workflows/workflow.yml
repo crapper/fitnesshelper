@@ -13,7 +13,8 @@ jobs:
       run: |
         # Dependencies
         sudo apt-get update
-        sudo apt install -y v4l2loopback-dkms v4l2loopback-utils linux-modules-extra-$(uname -r)
+        sudo apt install -y v4l2loopback-dkms v4l2loopback-utils gstreamer1.0-plugins-good linux-modules-extra-$(uname -r)
+        sudo apt install -y gstreamer1.0-plugins-bad # h264parse
 
         # Reset module state
         sudo modprobe -r v4l2loopback
