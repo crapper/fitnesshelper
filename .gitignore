@@ -1,1 +1,4 @@
 __pycache__
+cleaner.sh
+.coverage
+htmlcov
