@@ -6,6 +6,7 @@ sys.path.append(path)
 import unittest
 import cv2
 from app import *
+from pathlib import Path
 
 class TestModelController(unittest.TestCase):
     def setUp(self):
@@ -112,11 +113,17 @@ class TestModelController(unittest.TestCase):
         self.assertEqual(direction, PointView.up)
 
     def test_detect(self):
-        path1 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/pushup.jpg'))
-        path2 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/situp.jpg'))
-        path3 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/squat.jpg'))
-        path4 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/frontface.jpg'))
-        path5 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testimg/testnon.png'))
+        path1 = Path(__file__).parent.parent / "testimg" / "pushup.jpg"
+        path1 = path1.absolute().as_posix()
+        path2 = Path(__file__).parent.parent / "testimg" / "situp.jpg"
+        path2 = path2.absolute().as_posix()
+        path3 = Path(__file__).parent.parent / "testimg" / "squat.jpg"
+        path3 = path3.absolute().as_posix()
+        path4 = Path(__file__).parent.parent / "testimg" / "frontface.jpg"
+        path4 = path4.absolute().as_posix()
+        path5 = Path(__file__).parent.parent / "testimg" / "testnon.png"
+        path5 = path5.absolute().as_posix()
+
         frame = cv2.imread(path1)
         self.mc.detect(frame)
         self.assertEqual(self.mc.prediction, Activity.pushup)

@@ -1,12 +1,12 @@
 import sqlite3
 import datetime
-import os
+from pathlib import Path
 
 class SQLconnector:
     def __init__(self):
         now = datetime.datetime.now()
         self.date = now.date()
-        self.db_path = os.path.join(os.path.realpath(__file__), r"../Counter.db")
+        self.db_path = Path(__file__).parent / "Counter.db"
 
     def save(self, classname, counting, weight, time, MET):        
         con = sqlite3.connect(self.db_path)
