@@ -12,20 +12,13 @@ class TestVideoGet(unittest.TestCase):
         pass
 
     def test_get_real_camera(self):
-        # Test that the VideoGet instance is able to get frames
-        try:
-            # try to open the camera
-            self.camera = cv2.VideoCapture(0)
-            if not self.camera.isOpened():
-                raise unittest.SkipTest()
-            else:
-                self.camera.release()
-        except:
+        # check if the environment is github action
+        if os.environ.get('GITHUB_ACTIONS') == 'true':
             raise unittest.SkipTest()
         self.video = VideoGet(0, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            # print("test1")
+            print("test1")
             time.sleep(0.01)
         self.assertTrue(self.video.stream.isOpened())
         self.assertTrue(self.video.grabbed[0])
@@ -38,12 +31,12 @@ class TestVideoGet(unittest.TestCase):
         self.video = VideoGet(path, fps=30)
         self.video.start()
         while len(self.video.frame) < 30:
-            # print("test2")
+            print("test2")
             time.sleep(0.01)
         self.video.frame.pop(0)
         self.video.grabbed.pop(0)
         while len(self.video.frame) < 30:
-            # print("test3")
+            print("test3")
             time.sleep(0.01)
         self.assertEqual(len(self.video.frame), 30)
 
@@ -54,11 +47,11 @@ class TestVideoGet(unittest.TestCase):
         self.video = VideoGet(path, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            # print("test4")
+            print("test4")
             time.sleep(0.01)
         while not self.video.finished or len(self.video.frame) > 0:
             if len(self.video.frame) == 0:
-                # print("test5")
+                print("test5")
                 time.sleep(0.01)
             else:
                 self.video.frame.pop(0)
@@ -66,11 +59,13 @@ class TestVideoGet(unittest.TestCase):
         self.assertTrue(self.video.finished)
 
     def test_stop(self):
+        if os.environ.get('GITHUB_ACTIONS') == 'true':
+            raise unittest.SkipTest()
         # Test that the VideoGet instance is able to stop
         self.video = VideoGet(0, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            # print("test6")
+            print("test6")
             time.sleep(0.01)
         self.video.stop()
         self.assertFalse(self.video.stream.isOpened())
