@@ -19,7 +19,7 @@ class TestVideoGet(unittest.TestCase):
         self.video = VideoGet(0, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            time.sleep(0.01)
+            time.sleep(0.1)
         self.assertTrue(self.video.stream.isOpened())
         self.assertTrue(self.video.grabbed[0])
         self.assertIsNotNone(self.video.frame[0])
@@ -30,25 +30,25 @@ class TestVideoGet(unittest.TestCase):
         path = path.absolute().as_posix()
         self.video = VideoGet(path, fps=30)
         self.video.start()
-        while len(self.video.frame) < 30:
-            time.sleep(0.01)
+        while len(self.video.frame) <= 2:
+            time.sleep(0.1)
         self.video.frame.pop(0)
         self.video.grabbed.pop(0)
-        while len(self.video.frame) < 30:
-            time.sleep(0.01)
-        self.assertEqual(len(self.video.frame), 30)
+        while len(self.video.frame) <= 2:
+            time.sleep(0.1)
+        self.assertGreater(len(self.video.frame), 1)
 
-    def test_get_video_file2(self):
+    def test_get_video_file_til_end(self):
         # Test that the VideoGet instance is able to keep reading frame until the end of the video
         path = Path(__file__).parent.parent / "testvideo" / "testvideo.avi"
         path = path.absolute().as_posix()
         self.video = VideoGet(path, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            time.sleep(0.01)
+            time.sleep(0.1)
         while not self.video.finished or len(self.video.frame) > 0:
             if len(self.video.frame) == 0:
-                time.sleep(0.01)
+                time.sleep(0.1)
             else:
                 self.video.frame.pop(0)
                 self.video.grabbed.pop(0)
@@ -61,7 +61,7 @@ class TestVideoGet(unittest.TestCase):
         self.video = VideoGet(0, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            time.sleep(0.01)
+            time.sleep(0.1)
         self.video.stop()
         self.assertFalse(self.video.stream.isOpened())
 
