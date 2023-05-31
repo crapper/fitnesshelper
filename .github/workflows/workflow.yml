@@ -12,9 +12,9 @@ jobs:
     - name: Setup headless mock real camera source
       run: |
         # Dependencies
-        apt install -y v4l2loopback-dkms v4l2loopback-utils gstreamer1.0-plugins-good
-        apt install -y gstreamer1.0-plugins-bad # h264parse
-        apt install -y gstreamer1.0-libav # H.264 
+        sudo apt install -y v4l2loopback-dkms v4l2loopback-utils gstreamer1.0-plugins-good
+        sudo apt install -y gstreamer1.0-plugins-bad # h264parse
+        sudo apt install -y gstreamer1.0-libav # H.264
         
         # Reset module state
         modprobe -r v4l2loopback
