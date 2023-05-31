@@ -78,7 +78,7 @@ class TestVideoGet(unittest.TestCase):
         self.assertFalse(self.video.stream.isOpened())
 
     def tearDown(self):
-        if hasattr(self.video):
+        if hasattr(self, self.video):
             del self.video
 
 
