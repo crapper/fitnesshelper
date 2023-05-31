@@ -156,37 +156,31 @@ class VideoPage(Page):
             self.update_frame()
             return False
 
-    def most_frequent(self, List):
-        return max(set(List), key = List.count)
-
     def update_frame(self):
         if self.active == False or self.video_thread == None:
             return
         if self.video_thread.stream.isOpened() and self.frame_read != self.video_thread.total_frame+1:
-            if len(self.video_thread.frame) != 0:
-                ret, frame = self.video_thread.grabbed.pop(0), self.video_thread.frame.pop(0)
-                self.frame_read += 1
-                if ret:
-                    img = self.model.detect(frame)
-                    if self.model.prediction != Activity.non:
-                        self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, self.frame_read)
-                        self.update_count()
-                        self.offset_non_frame.append(self.model.prediction)
-                    if len(self.offset_non_frame) >= 200:
-                        max_appear = self.most_frequent(self.offset_non_frame)
-                        setlist = list(set(self.offset_non_frame))
-                        setlist.remove(max_appear)
-                        for i in setlist:
-                            if i != Activity.non:
-                                self.counter_list[i].state = ActivityType.NA
-                                if self.counter_list[i].peak_valley_count % 2 == 1:
-                                    self.counter_list[i].peak_valley_count -= 1
-                                self.counter_list[i].temp_count_time = 0
-                        self.offset_non_frame = []
-                    self.setCamImg(img)
-                    x0, y0, x1, y1 = self.parent.coords(self.bar_fill)
-                    x1 = self.initial_x + int(self.total * self.frame_read/self.video_thread.total_frame)
-                    self.parent.coords(self.bar_fill, x0, y0, x1, y1)
+            if len(self.video_thread.frame) == 0:
+                return
+
+            ret, frame = self.video_thread.grabbed.pop(0), self.video_thread.frame.pop(0)
+            self.frame_read += 1
+
+            if not ret:
+                return
+
+            img = self.model.detect(frame)
+            if self.model.prediction != Activity.non:
+                self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, self.frame_read)
+                self.update_count()
+                self.offset_non_frame.append(self.model.prediction)
+            filter_activities_by_frequency(self.counter_list, self.offset_non_frame)
+
+            self.setCamImg(img)
+            x0, y0, x1, y1 = self.parent.coords(self.bar_fill)
+            x1 = self.initial_x + int(self.total * self.frame_read/self.video_thread.total_frame)
+            self.parent.coords(self.bar_fill, x0, y0, x1, y1)
+            
         else:
             w = int((self.BgDown_x-self.BgTop_x)*0.8)
             h = int((self.BgDown_y-self.BgTop_y)*0.8/2)

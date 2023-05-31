@@ -3,6 +3,27 @@ import time
 import threading
 import numpy as np
 
+from typing import List
+from .types import *
+from .counter import *
+
+def most_frequent(activities: List[Activity]):
+    return max(set(activities), key = List.count)
+
+def filter_activities_by_frequency(counters: List[Counter], activities: List[Activity]):
+    if len(activities) < 200:
+        return
+    max_appear = most_frequent(activities)
+    setlist = list(set(activities))
+    setlist.remove(max_appear)
+    for i in setlist:
+        if i != Activity.non:
+            counters[i].state = ActivityType.NA
+            if counters[i].peak_valley_count % 2 == 1:
+                counters[i].peak_valley_count -= 1
+            counters[i].temp_count_time = 0
+    activities.clear()
+
 class VideoGet:
     def __init__(self, src, fps = 30):
         self.fps = fps
@@ -50,11 +71,3 @@ class VideoGet:
 
     def stop(self):
         self.stream.release()
-
-    def __del__(self):
-        # stop thread
-        if self.stream.isOpened() == False:
-            self.thread.join()
-        # release stream
-        if self.stream.isOpened():
-            self.stream.release()

@@ -2,6 +2,7 @@ import cv2
 import tkinter as tk
 import numpy as np
 from PIL import Image, ImageTk
+from typing import List
 
 from .counter import *
 from .video_get import *
@@ -20,12 +21,12 @@ class CameraPage(Page):
         self.img_tk = ImageTk.PhotoImage(image=self.img) 
         self.cam = parent.create_image(0,0, image=self.img_tk, anchor=tk.NW)
         self.video_thread = VideoGet(0, 20)
-        self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
+        self.counter_list: List[Counter] = [PushupCounter(), SitupCounter(), SquatCounter()]
         self.db_connector = SQLconnector()
         self.METlist = [3.8, 5.5, 8.0]
         self.counter_list[0].peak_valley_count = 10
         self.counter_list[0].total_time = 100
-        self.offset_non_frame = []
+        self.offset_non_frame: List[Activity] = []
 
         self.hide_page()
 
@@ -86,34 +87,25 @@ class CameraPage(Page):
         h = self.controller.height
         blank = np.full((h, w,3), 0, np.uint8)
         self.setCamImg(blank)
-    
-    def most_frequent(self, List):
-        return max(set(List), key = List.count)
 
     def update_frame(self):
         if self.active == False or self.video_thread == None:
             return
         if self.video_thread.stream.isOpened() and len(self.video_thread.grabbed) > 0:
             ret, frame = self.video_thread.grabbed[0], self.video_thread.frame[0]
-            if ret:
-                img = self.model.detect(frame)
-                if self.model.prediction != Activity.non:
-                    self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, time.time())
-                    self.offset_non_frame.append(self.model.prediction)
-                if len(self.offset_non_frame) >= 200:
-                    max_appear = self.most_frequent(self.offset_non_frame)
-                    setlist = list(set(self.offset_non_frame))
-                    setlist.remove(max_appear)
-                    for i in setlist:
-                        if i != Activity.non:
-                            self.counter_list[i].state = ActivityType.NA
-                            if self.counter_list[i].peak_valley_count % 2 == 1:
-                                self.counter_list[i].peak_valley_count -= 1
-                            self.counter_list[i].temp_count_time = 0
-                    self.offset_non_frame = []
-                text = "Pushup: " + str(self.counter_list[0].get_count()) + " Situp: " + str(self.counter_list[1].get_count()) + " Squat: " + str(self.counter_list[2].get_count())
-                cv2.putText(img, text, (10, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0,0,255), 2)
-                self.setCamImg(img)
+            
+            if not ret:
+                return
+            
+            img = self.model.detect(frame)
+            if self.model.prediction != Activity.non:
+                self.counter_list[self.model.prediction].update_count(self.model.angle_for_count, time.time())
+                self.offset_non_frame.append(self.model.prediction)
+            filter_activities_by_frequency(self.counter_list, self.offset_non_frame)
+
+            text = "Pushup: " + str(self.counter_list[0].get_count()) + " Situp: " + str(self.counter_list[1].get_count()) + " Squat: " + str(self.counter_list[2].get_count())
+            cv2.putText(img, text, (10, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0,0,255), 2)
+            self.setCamImg(img)
         else:
             w = int(self.controller.width * 0.9)
             h = self.controller.height
