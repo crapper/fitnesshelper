@@ -8,7 +8,7 @@ from .types import *
 from .counter import *
 
 def most_frequent(activities: List[Activity]):
-    return max(set(activities), key = List.count)
+    return max(set(activities), key = activities.count)
 
 def filter_activities_by_frequency(counters: List[Counter], activities: List[Activity]):
     if len(activities) < 200:
