@@ -97,7 +97,6 @@ class ConfigPage(Page):
 
     def leave(self):
         if self.tips != None:
-            print("leave")
             self.tips.hidetip()
             self.tips = None
     
