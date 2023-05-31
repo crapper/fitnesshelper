@@ -65,10 +65,38 @@ class TestVideoGet(unittest.TestCase):
         self.video.stop()
         self.assertFalse(self.video.stream.isOpened())
 
+    def test_most_frequent(self):
+        Listtest = [Activity.pushup, Activity.pushup, Activity.squat, Activity.situp]
+        self.assertEqual(most_frequent(Listtest), Activity.pushup)
+
+    def test_filter_activities_by_frequency(self):
+        Counterlist = [PushupCounter(), SitupCounter(), SquatCounter()]
+        Listtest = []
+        filter_activities_by_frequency(Listtest, Counterlist) # dummy return when len < 200
+        for i in range(0, 200):
+            Listtest.append(Activity.pushup)
+        for i in range(0, 100):
+            Listtest.append(Activity.situp)
+        for i in range(0, 50):
+            Listtest.append(Activity.squat)
+        Counterlist[0].temp_count_time = 100
+        Counterlist[0].peak_valley_count = 3
+        Counterlist[1].temp_count_time = 100
+        Counterlist[1].peak_valley_count = 3
+        Counterlist[2].temp_count_time = 100
+        Counterlist[2].peak_valley_count = 3
+        filter_activities_by_frequency(Counterlist, Listtest)
+        self.assertEqual(len(Listtest), 0)
+        self.assertEqual(Counterlist[0].temp_count_time, 100)
+        self.assertEqual(Counterlist[0].peak_valley_count, 3)
+        self.assertEqual(Counterlist[1].temp_count_time, 0)
+        self.assertEqual(Counterlist[1].peak_valley_count, 2)
+        self.assertEqual(Counterlist[2].temp_count_time, 0)
+        self.assertEqual(Counterlist[2].peak_valley_count, 2)
+
     def tearDown(self):
         if self.video is not None:
             del self.video
-
 
 if __name__ == '__main__':
     unittest.main()
