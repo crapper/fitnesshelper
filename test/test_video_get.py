@@ -13,6 +13,13 @@ class TestVideoGet(unittest.TestCase):
 
     def test_get_real_camera(self):
         # Test that the VideoGet instance is able to get frames
+        try:
+            # try to open the camera
+            self.camera = cv2.VideoCapture(0)
+            if not self.camera.isOpened():
+                raise unittest.SkipTest()
+        except:
+            raise unittest.SkipTest()
         self.video = VideoGet(0, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
@@ -24,7 +31,7 @@ class TestVideoGet(unittest.TestCase):
     
     def test_get_video_file(self):
         # Test that the VideoGet instance is able to keep reading frame after pop the top frame for video source
-        path = Path(__file__).parent / "../testvideo/testvideo.avi"
+        path = Path(__file__).parent.parent / "/testvideo/testvideo.avi"
         path = path.absolute().as_posix()
         self.video = VideoGet(path, fps=30)
         self.video.start()
@@ -40,7 +47,7 @@ class TestVideoGet(unittest.TestCase):
 
     def test_get_video_file2(self):
         # Test that the VideoGet instance is able to keep reading frame until the end of the video
-        path = Path(__file__).parent / "../testvideo/testvideo.avi"
+        path = Path(__file__).parent.parent / "/testvideo/testvideo.avi"
         path = path.absolute().as_posix()
         self.video = VideoGet(path, fps=30)
         self.video.start()
@@ -58,7 +65,9 @@ class TestVideoGet(unittest.TestCase):
 
     def test_stop(self):
         # Test that the VideoGet instance is able to stop
-        self.video = VideoGet(0, fps=30)
+        path = Path(__file__).parent.parent / "/testvideo/testvideo.avi"
+        path = path.absolute().as_posix()
+        self.video = VideoGet(path, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
             print("test6")
