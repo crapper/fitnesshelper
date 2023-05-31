@@ -88,12 +88,13 @@ class ConfigPage(Page):
         if self.controller.statistic_unit != self.drop_statistic_unit.current():
             self.controller.statistic_unit = self.drop_statistic_unit.current()
             message += "Statistic Unit update successful to "+self.drop_statistic_unit.get()+"\n"
-            if self.controller.statistic_page.active:
+            if self.controller.statistic_unit and self.controller.statistic_page.active:
                 self.controller.statistic_page.update_plot()
         if message == "":
             message = "No update"
         tk.messagebox.showinfo("Success", message)
         self.toggle_visible()
+        return message
 
     def leave(self):
         if self.tips != None:
