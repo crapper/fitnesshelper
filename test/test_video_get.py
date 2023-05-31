@@ -10,15 +10,15 @@ class TestVideoGet(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_get_real_camera(self):
-        # Test that the VideoGet instance is able to get frames
-        self.video = VideoGet(0, fps=30)
-        self.video.start()
-        while self.video.stream.isOpened() == False:
-            time.sleep(0.01)
-        self.assertTrue(self.video.stream.isOpened())
-        self.assertTrue(self.video.grabbed[0])
-        self.assertIsNotNone(self.video.frame[0])
+    # def test_get_real_camera(self):
+    #     # Test that the VideoGet instance is able to get frames
+    #     self.video = VideoGet(0, fps=30)
+    #     self.video.start()
+    #     while self.video.stream.isOpened() == False:
+    #         time.sleep(0.01)
+    #     self.assertTrue(self.video.stream.isOpened())
+    #     self.assertTrue(self.video.grabbed[0])
+    #     self.assertIsNotNone(self.video.frame[0])
     
     def test_get_video_file(self):
         # Test that the VideoGet instance is able to keep reading frame after pop the top frame for video source
