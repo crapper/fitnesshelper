@@ -3,36 +3,6 @@ import tkinter as tk
 from .page import *
 from .tips_window import *
 
-tips = None
-
-def Update_Model_Track_Tip(widget, text):
-    global tips
-    if tips != None:
-        tips.hidetip()
-    tips = TipWindow(widget)
-    value = str(round(float(widget.get()), 2))
-    tips.showtip(text + value)
-    def leave(event):
-        tips.hidetip()
-    widget.bind('<Leave>', leave)
-
-def Create_Model_Track_Tip(widget, text):
-    def enter(event):
-        global tips
-        if tips != None:
-            tips.hidetip()
-        tips = TipWindow(widget)
-        value = str(round(float(widget.get()), 2))
-        tips.showtip(text + value)
-    def leave(event):
-        global tips
-        if tips != None:
-            tips.hidetip()
-        tips = TipWindow(widget)
-        tips.hidetip()
-    widget.bind('<Enter>', enter)
-    widget.bind('<Leave>', leave)
-
 class ConfigPage(Page):
     def __init__(self, parent: tk.Canvas, controller: App):
         Page.__init__(self, parent, controller)
@@ -50,6 +20,7 @@ class ConfigPage(Page):
         self.initvalue2.set(0.5)
         self.entry_text = tk.StringVar()
         self.entry_text.set("")
+        self.tips = None
 
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1), text="Weight: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         v_cmd = (self.register(self.validate_entry))
@@ -70,16 +41,16 @@ class ConfigPage(Page):
         #Drag bar for model confidence
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity), text="ModelConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         width_model_conf, height_model_conf = self.get_width_height(self.panel[4])
-        self.drag_model_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Update_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: "), variable=self.initvalue)
-        Create_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: ")
+        self.drag_model_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: self.Update_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: "), variable=self.initvalue)
+        self.Create_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: ")
         self.drag_model_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity))
         self.drag_model_conf.place_forget()
 
         #Drag bar for tracking confidence
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10), text="TrackingConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW))
         width_track_conf, height_track_conf = self.get_width_height(self.panel[5])
-        self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: Update_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "), variable=self.initvalue2)
-        Create_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: ")
+        self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: self.Update_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "), variable=self.initvalue2)
+        self.Create_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: ")
         self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10))
         self.drag_track_conf.place_forget()
 
@@ -100,10 +71,11 @@ class ConfigPage(Page):
 
     def save(self):
         message = ""
-        if self.weight_entry.get() != "" and self.controller.weight != int(self.weight_entry.get()):
-            self.controller.weight = int(self.weight_entry.get())
-            message += "Weight update successful to "+str(int(self.weight_entry.get()))+"\n"
-            self.entry_text.set(str(int(self.weight_entry.get())))
+        if self.weight_entry.get() != "" and self.controller.weight != float(self.weight_entry.get()):
+            if float(self.weight_entry.get()) >= 1000:
+                self.entry_text.set("999")
+            self.controller.weight = float(self.weight_entry.get())
+            message += "Weight update successful to "+str(float(self.weight_entry.get()))+"\n"
         if self.controller.model_complexity != int(self.drop_model_complexity.get()):
             self.controller.model_complexity = int(self.drop_model_complexity.get())
             message += "Model Complexity update successful to "+self.drop_model_complexity.get()+"\n"
@@ -123,6 +95,31 @@ class ConfigPage(Page):
         tk.messagebox.showinfo("Success", message)
         self.toggle_visible()
 
+    def Update_Model_Track_Tip(self, widget, text):
+        if self.tips != None:
+            self.tips.hidetip()
+        self.tips = TipWindow(widget)
+        value = str(round(float(widget.get()), 2))
+        self.tips.showtip(text + value)
+        def leave(event):
+            self.tips.hidetip()
+        widget.bind('<Leave>', leave)
+
+    def Create_Model_Track_Tip(self, widget, text):
+        def enter(event):
+            if self.tips != None:
+                self.tips.hidetip()
+            self.tips = TipWindow(widget)
+            value = str(round(float(widget.get()), 2))
+            self.tips.showtip(text + value)
+        def leave(event):
+            if self.tips != None:
+                self.tips.hidetip()
+            self.tips = TipWindow(widget)
+            self.tips.hidetip()
+        widget.bind('<Enter>', enter)
+        widget.bind('<Leave>', leave)
+
     def get_width_height(self, id):
         bounds = self.parent.bbox(id)
         width = bounds[2] - bounds[0]
@@ -133,6 +130,8 @@ class ConfigPage(Page):
         try:
             if P == ""  or float(P):
                 pass
+            if len(P) > 6:
+                return False
         except:
             return False
         return True
