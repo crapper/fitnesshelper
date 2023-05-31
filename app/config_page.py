@@ -20,7 +20,7 @@ class ConfigPage(Page):
         self.initvalue2.set(0.5)
         self.entry_text = tk.StringVar()
         self.entry_text.set("")
-        self.tips = None
+        self.tips: TipWindow = None
 
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1), text="Weight: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         v_cmd = (self.register(self.validate_entry))
