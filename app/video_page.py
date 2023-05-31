@@ -68,12 +68,6 @@ class VideoPage(Page):
         self.stop_vid()
         self.hide_page()
 
-    def video_stopped(self):
-        if self.video_thread != None:
-            return self.video_thread.stopped
-        else:
-            return True
-
     def setCamImg(self, img_np: cv2.Mat):
         w = int((self.BgDown_x-self.BgTop_x)*0.8)
         h = int((self.BgDown_y-self.BgTop_y)*0.8/2)
@@ -159,9 +153,7 @@ class VideoPage(Page):
     def update_frame(self):
         if self.active == False or self.video_thread == None:
             return
-        if self.video_thread.stream.isOpened() and self.frame_read != self.video_thread.total_frame+1:
-            if len(self.video_thread.frame) == 0:
-                return
+        if self.video_thread.stream.isOpened() and self.frame_read != self.video_thread.total_frame+1 and len(self.video_thread.frame) != 0:
 
             ret, frame = self.video_thread.grabbed.pop(0), self.video_thread.frame.pop(0)
             self.frame_read += 1

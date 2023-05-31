@@ -75,8 +75,6 @@ class CameraPage(Page):
         self.img_tk = ImageTk.PhotoImage(image=self.img)  #must use same ImageTk object
         self.parent.itemconfig(self.cam, image=self.img_tk, anchor=tk.NW)
 
-    def video_stopped(self):
-        return self.video_thread.stopped
 
     def start_vid(self):
         self.video_thread.start()
