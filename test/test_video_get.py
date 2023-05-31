@@ -9,6 +9,7 @@ from pathlib import Path
 
 class TestVideoGet(unittest.TestCase):
     def setUp(self):
+        self.video = None
         pass
 
     def test_get_real_camera(self):
@@ -71,6 +72,7 @@ class TestVideoGet(unittest.TestCase):
         self.assertFalse(self.video.stream.isOpened())
 
     def tearDown(self):
+        if self.video is not None:
             del self.video
 
 
