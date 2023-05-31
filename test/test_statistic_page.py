@@ -9,7 +9,6 @@ import tkinter as tk
 from app import *
 import matplotlib.pyplot
 import tkinter.messagebox as mb
-import gc
 
 root = App()
 
