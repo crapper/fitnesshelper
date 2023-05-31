@@ -9,7 +9,7 @@ import tkinter as tk
 from app import *
 import tkinter.messagebox as mb
 
-root = App()
+from test_setup import root
 
 class TestConfigPage(unittest.TestCase):
     def setUp(self):
@@ -18,7 +18,11 @@ class TestConfigPage(unittest.TestCase):
         self.config_page = ConfigPage(self.c, root)
 
     def tearDown(self):
-        root.__init__()
+        self.config_page.model_conf_value.set(0.5)
+        self.config_page.track_conf_value.set(0.5)
+        self.config_page.entry_text.set("")
+        self.config_page.drop_model_complexity.current(1)
+        self.config_page.drop_statistic_unit.current(0)
         del self.config_page
         del self.c
         pass
@@ -53,6 +57,7 @@ class TestConfigPage(unittest.TestCase):
         self.assertTrue(self.config_page.validate_entry("1.0"))
         self.assertFalse(self.config_page.validate_entry("1.0.0"))
         self.assertTrue(self.config_page.validate_entry(""))
+        self.assertFalse(self.config_page.validate_entry("1000000"))
 
     def test_enter_leave(self):
         self.assertIsNone(self.config_page.tips)
@@ -112,5 +117,6 @@ class TestConfigPage(unittest.TestCase):
     
 if __name__ == '__main__':
     unittest.main()
+
 
 

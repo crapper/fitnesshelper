@@ -9,15 +9,15 @@ import tkinter as tk
 from app import *
 import matplotlib.pyplot
 import tkinter.messagebox as mb
+import gc
 
-root = App()
+from test_setup import root
 
 class TestStatisticPage(unittest.TestCase):
     def setUp(self):
         global root
         self.c = tk.Canvas(root)
         self.statistic_page = StatisticPage(self.c,root)
-        root.withdraw()
         self.statistic_page.start_date = "2019-01-01"
         self.statistic_page.end_date = "2019-01-01"
         self.sql_conn = SQLconnector()
@@ -28,12 +28,12 @@ class TestStatisticPage(unittest.TestCase):
         self.sql_conn.save("situp", 10, 5, 60, 3)
 
     def tearDown(self):
-        root.__init__()
         matplotlib.pyplot.close('all')
         del self.statistic_page
         del self.c
         os.remove(self.sql_conn.db_path)
         del self.sql_conn
+        gc.collect()
 
     def test_show_page(self):
         self.assertFalse(self.statistic_page.active)
