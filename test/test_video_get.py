@@ -15,7 +15,7 @@ class TestVideoGet(unittest.TestCase):
         self.video = VideoGet(0, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            pass
+            time.sleep(0.01)
         self.assertTrue(self.video.stream.isOpened())
         self.assertTrue(self.video.grabbed[0])
         self.assertIsNotNone(self.video.frame[0])
@@ -26,11 +26,11 @@ class TestVideoGet(unittest.TestCase):
         self.video = VideoGet(path, fps=30)
         self.video.start()
         while len(self.video.frame) < 30:
-            pass
+            time.sleep(0.01)
         self.video.frame.pop(0)
         self.video.grabbed.pop(0)
         while len(self.video.frame) < 30:
-            pass
+            time.sleep(0.01)
         self.assertEqual(len(self.video.frame), 30)
 
     def test_get_video_file2(self):
@@ -39,25 +39,23 @@ class TestVideoGet(unittest.TestCase):
         self.video = VideoGet(path, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            pass
+            time.sleep(0.01)
         while not self.video.finished or len(self.video.frame) > 0:
             if len(self.video.frame) == 0:
-                pass
+                time.sleep(0.01)
             else:
                 self.video.frame.pop(0)
                 self.video.grabbed.pop(0)
         self.assertTrue(self.video.finished)
-
 
     def test_stop(self):
         # Test that the VideoGet instance is able to stop
         self.video = VideoGet(0, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:
-            pass
+            time.sleep(0.01)
         self.video.stop()
         self.assertFalse(self.video.stream.isOpened())
-
 
     def tearDown(self):
         del self.video
