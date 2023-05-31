@@ -28,6 +28,7 @@ class TestStatisticPage(unittest.TestCase):
         self.sql_conn.save("situp", 10, 5, 60, 3)
 
     def tearDown(self):
+        root.__init__()
         matplotlib.pyplot.close('all')
         del self.statistic_page
         del self.c
