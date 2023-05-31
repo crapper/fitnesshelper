@@ -5,6 +5,7 @@ sys.path.append(path)
 
 import unittest
 from app import *
+from pathlib import Path
 
 class TestVideoGet(unittest.TestCase):
     def setUp(self):
@@ -23,7 +24,8 @@ class TestVideoGet(unittest.TestCase):
     
     def test_get_video_file(self):
         # Test that the VideoGet instance is able to keep reading frame after pop the top frame for video source
-        path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testvideo/pushup5.mp4'))
+        path = Path(__file__).parent / "../testvideo/testvideo.avi"
+        path = path.absolute().as_posix()
         self.video = VideoGet(path, fps=30)
         self.video.start()
         while len(self.video.frame) < 30:
@@ -38,7 +40,8 @@ class TestVideoGet(unittest.TestCase):
 
     def test_get_video_file2(self):
         # Test that the VideoGet instance is able to keep reading frame until the end of the video
-        path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../testvideo/testvideo.avi'))
+        path = Path(__file__).parent / "../testvideo/testvideo.avi"
+        path = path.absolute().as_posix()
         self.video = VideoGet(path, fps=30)
         self.video.start()
         while self.video.stream.isOpened() == False:

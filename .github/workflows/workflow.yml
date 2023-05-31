@@ -1,5 +1,8 @@
 name: CodeCov
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      'test_video_get.py'
 jobs:
   run:
     runs-on: ubuntu-latest
