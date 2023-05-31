@@ -13,7 +13,7 @@ jobs:
       run: |
         # Dependencies
         sudo apt-get update
-        sudo apt install -y v4l2loopback-dkms v4l2loopback-utils
+        sudo apt install -y v4l2loopback-dkms v4l2loopback-utils linux-modules-extra-$(uname -r)
 
         # Reset module state
         sudo modprobe -r v4l2loopback
