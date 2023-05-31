@@ -84,7 +84,12 @@ class TestConfigPage(unittest.TestCase):
     def test_save_update_overweight(self):
         def mock_showinfo(title, message):
             return True
-        root.statistic_page = None # To avoid error, set up dummy statistic page
+        class DummyStatisticPage():
+            def __init__(self):
+                self.active = True
+            def update_plot(self):
+                pass
+        root.statistic_page = DummyStatisticPage() # To avoid error, set up dummy statistic page
         self.config_page.model_conf_value.set(0.7)
         self.config_page.track_conf_value.set(0.7)
         self.config_page.entry_text.set("1000")
@@ -101,7 +106,12 @@ class TestConfigPage(unittest.TestCase):
     def test_save_update_underweight(self):
         def mock_showinfo(title, message):
             return True
-        root.statistic_page = None # To avoid error, set up dummy statistic page
+        class DummyStatisticPage():
+            def __init__(self):
+                self.active = True
+            def update_plot(self):
+                pass
+        root.statistic_page = DummyStatisticPage() # To avoid error, set up dummy statistic page
         self.config_page.model_conf_value.set(0.7)
         self.config_page.track_conf_value.set(0.7)
         self.config_page.entry_text.set("100")
