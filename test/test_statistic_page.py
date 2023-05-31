@@ -101,6 +101,7 @@ class TestStatisticPage(unittest.TestCase):
         self.assertIsNone(self.statistic_page.plot_graph_list[1])
         self.assertIsNone(self.statistic_page.plot_graph_list[2])
         self.assertIsNone(self.statistic_page.plot_graph_list[3])
+        root.statistic_unit = 0 # dummy for coverage
         self.statistic_page.update_plot()
         self.assertIsNotNone(self.statistic_page.plot_graph_list[0])
         self.assertIsNotNone(self.statistic_page.plot_graph_list[1])
