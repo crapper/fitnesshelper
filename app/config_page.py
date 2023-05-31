@@ -95,30 +95,27 @@ class ConfigPage(Page):
         tk.messagebox.showinfo("Success", message)
         self.toggle_visible()
 
-    def Update_Model_Track_Tip(self, widget, text):
+    def leave(self):
+        if self.tips != None:
+            self.tips.hidetip()
+    
+    def enter(self, widget, text):
         if self.tips != None:
             self.tips.hidetip()
         self.tips = TipWindow(widget)
-        value = str(round(float(widget.get()), 2))
-        self.tips.showtip(text + value)
-        def leave(event):
-            self.tips.hidetip()
-        widget.bind('<Leave>', leave)
-
-    def Create_Model_Track_Tip(self, widget, text):
-        def enter(event):
-            if self.tips != None:
-                self.tips.hidetip()
-            self.tips = TipWindow(widget)
+        try:
             value = str(round(float(widget.get()), 2))
             self.tips.showtip(text + value)
-        def leave(event):
-            if self.tips != None:
-                self.tips.hidetip()
-            self.tips = TipWindow(widget)
-            self.tips.hidetip()
-        widget.bind('<Enter>', enter)
-        widget.bind('<Leave>', leave)
+        except:
+            self.tips.showtip(text)
+
+    def Update_Model_Track_Tip(self, widget, text):
+        self.enter(widget, text)
+        widget.bind('<Leave>', self.leave)
+
+    def Create_Model_Track_Tip(self, widget, text):
+        widget.bind('<Enter>',lambda event, widget=widget, text=text: self.enter(widget, text))
+        widget.bind('<Leave>',lambda event: self.leave)
 
     def get_width_height(self, id):
         bounds = self.parent.bbox(id)
