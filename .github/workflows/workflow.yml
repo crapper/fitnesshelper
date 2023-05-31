@@ -1,8 +1,5 @@
 name: CodeCov
-on:
-  push:
-    paths-ignore:
-      'test/test_video_get.py'
+on: [push, pull_request]
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -24,7 +21,7 @@ jobs:
       run: |
         pip install coverage
         pip install -r requirements.txt
-        coverage run --omit 'test_video_get.py' -m unittest discover test
+        coverage run --omit 'test/test_video_get.py' -m unittest discover test
         coverage xml -i
         
     - name: Upload coverage to Codecov
