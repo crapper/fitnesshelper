@@ -97,11 +97,12 @@ class ConfigPage(Page):
 
     def leave(self):
         if self.tips != None:
+            print("leave")
             self.tips.hidetip()
+            self.tips = None
     
     def enter(self, widget, text):
-        if self.tips != None:
-            self.tips.hidetip()
+        self.leave()
         self.tips = TipWindow(widget)
         try:
             value = str(round(float(widget.get()), 2))
@@ -111,11 +112,11 @@ class ConfigPage(Page):
 
     def Update_Model_Track_Tip(self, widget, text):
         self.enter(widget, text)
-        widget.bind('<Leave>', self.leave)
+        widget.bind('<Leave>',lambda event: self.leave())
 
     def Create_Model_Track_Tip(self, widget, text):
         widget.bind('<Enter>',lambda event, widget=widget, text=text: self.enter(widget, text))
-        widget.bind('<Leave>',lambda event: self.leave)
+        widget.bind('<Leave>',lambda event: self.leave())
 
     def get_width_height(self, id):
         bounds = self.parent.bbox(id)
