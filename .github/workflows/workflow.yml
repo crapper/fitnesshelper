@@ -9,10 +9,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Setup headless display
+      uses: pyvista/setup-headless-display-action@v1
+
     - name: Setup Python
       uses: actions/setup-python@master
       with:
         python-version: 3.9
+
     - name: Generate Report
       run: |
         pip install coverage
