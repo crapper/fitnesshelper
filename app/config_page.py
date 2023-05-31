@@ -14,10 +14,10 @@ class ConfigPage(Page):
         self.shape_tri_pointer={'bounds': [1152, 352, self.BgDown_x, 320, self.BgDown_x, 384], 'kind': 'tri', 'fill': True}
         self.panel.append(self.parent.create_polygon(list(self.shape_tri_pointer.values())[0],fill='white',outline='blue', width = 5)) #[0] : widget background panel triangle
         self.panel.append(self.parent.create_rectangle(self.BgTop_x, self.BgTop_y,self.BgDown_x,self.BgDown_y,fill='white',outline='blue', width = 5)) #[1] : widget background panel rectangle
-        self.initvalue = tk.DoubleVar()
-        self.initvalue.set(0.5)
-        self.initvalue2 = tk.DoubleVar()
-        self.initvalue2.set(0.5)
+        self.model_conf_value = tk.DoubleVar()
+        self.model_conf_value.set(0.5)
+        self.track_conf_value = tk.DoubleVar()
+        self.track_conf_value.set(0.5)
         self.entry_text = tk.StringVar()
         self.entry_text.set("")
         self.tips: TipWindow = None
@@ -41,7 +41,7 @@ class ConfigPage(Page):
         #Drag bar for model confidence
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity), text="ModelConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW)) 
         width_model_conf, height_model_conf = self.get_width_height(self.panel[4])
-        self.drag_model_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: self.Update_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: "), variable=self.initvalue)
+        self.drag_model_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: self.Update_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: "), variable=self.model_conf_value)
         self.Create_Model_Track_Tip(self.drag_model_conf, "min_detection_confidence: ")
         self.drag_model_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_model_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity))
         self.drag_model_conf.place_forget()
@@ -49,7 +49,7 @@ class ConfigPage(Page):
         #Drag bar for tracking confidence
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10), text="TrackingConf: ", font=("Helvetica", 16), fill="black", anchor=tk.NW))
         width_track_conf, height_track_conf = self.get_width_height(self.panel[5])
-        self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: self.Update_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "), variable=self.initvalue2)
+        self.drag_track_conf = tk.ttk.Scale(self.controller, from_=0, to=1, orient="horizontal", command=lambda x: self.Update_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: "), variable=self.track_conf_value)
         self.Create_Model_Track_Tip(self.drag_track_conf, "min_tracking_confidence: ")
         self.drag_track_conf.place(x= self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) + width_track_conf, y = self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1+height_weight+height_model_complexity+height_model_conf+10))
         self.drag_track_conf.place_forget()
@@ -88,7 +88,7 @@ class ConfigPage(Page):
         if self.controller.statistic_unit != self.drop_statistic_unit.current():
             self.controller.statistic_unit = self.drop_statistic_unit.current()
             message += "Statistic Unit update successful to "+self.drop_statistic_unit.get()+"\n"
-            if self.controller.statistic_unit and self.controller.statistic_page.active:
+            if self.controller.statistic_page and self.controller.statistic_page.active:
                 self.controller.statistic_page.update_plot()
         if message == "":
             message = "No update"
