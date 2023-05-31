@@ -46,6 +46,7 @@ class VideoGet:
         if self.stream.isOpened() == False:
             if self.src != 0:
                 self.stream.open(self.src)
+                self.stream.set(cv2.CAP_PROP_POS_FRAMES, self.currentframe)
                 self.total_frame = int(self.stream.get(cv2.CAP_PROP_FRAME_COUNT)) 
                 self.fps_video = self.stream.get(cv2.CAP_PROP_FPS)
             else:
@@ -71,3 +72,6 @@ class VideoGet:
 
     def stop(self):
         self.stream.release()
+        self.stream = cv2.VideoCapture()
+        self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
