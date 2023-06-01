@@ -129,9 +129,6 @@ class TestVideoPage(unittest.TestCase):
         self.assertEqual(row[3], root.weight)
         self.assertEqual(row[4], time / fps)
         self.assertEqual(row[5], MET)
-        
-    
 
 if __name__ == '__main__':
     unittest.main()
-    

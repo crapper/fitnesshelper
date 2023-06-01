@@ -114,6 +114,5 @@ class TestStatisticPage(unittest.TestCase):
         root.statistic_unit = 2 # dummy for coverage
         self.statistic_page.update_plot()
 
-
 if __name__ == '__main__':
     unittest.main()

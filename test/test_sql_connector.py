@@ -140,7 +140,6 @@ class TestSQLconnector(unittest.TestCase):
         self.assertEqual(row[4], 60)
         self.assertEqual(row[5], 3)
 
-
     def tearDown(self):
         os.remove(self.sql_conn.db_path)
         del self.sql_conn

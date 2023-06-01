@@ -169,8 +169,6 @@ class TestModelController(unittest.TestCase):
         frame = cv2.imread(path5)
         self.mc.detect(frame)
         self.assertEqual(self.mc.prediction, Activity.non)
-        
-
 
     def test_reset(self):
         self.mc.reset()

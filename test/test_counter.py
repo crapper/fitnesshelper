@@ -79,7 +79,5 @@ class TestCounter(unittest.TestCase):
         sqc.update_count(70, 3)
         self.assertEqual(sqc.get_count(), 1)
 
-
-
 if __name__ == '__main__':
     unittest.main()

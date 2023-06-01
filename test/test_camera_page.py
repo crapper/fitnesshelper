@@ -128,7 +128,6 @@ class TestCameraPage(unittest.TestCase):
             frame += 1
         self.assertGreater(len(self.camera_page.offset_non_frame), 0)
 
-
 if __name__ == '__main__':
     unittest.main()
     
