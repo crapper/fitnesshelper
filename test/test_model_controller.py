@@ -22,9 +22,9 @@ class TestModelController(unittest.TestCase):
         self.assertEqual(self.mc.prediction, Activity.non)
         self.assertEqual(self.mc.point_side, PointView.front)
 
-    # def test_set_model(self):
-    #     self.mc.set_model(2, 0.75, 0.75)
-    #     self.assertEqual(self.mc.model.model_complexity, 2)
+    def test_set_model(self):
+        self.assertFalse(self.mc.set_model("", 0.75, 0.75))
+        self.assertTrue(self.mc.set_model(2, 0.75, 0.75))
 
     def test_angle_cal(self):
         a = [0, 0]
