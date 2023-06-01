@@ -64,14 +64,12 @@ class FitnessHelper(App):
         widget.bind('<Enter>', enter)
         widget.bind('<Leave>', leave)
 
+    def update_date(self, date_win: tk.Toplevel, cal: tkc.Calendar):
+        self.temp_date = cal.get_date()
+        date_win.destroy()
+
     def pick_date(self, title="Pick Date") -> str:
-        temp_date = ''
-
-        def update_date(date_win: tk.Toplevel, cal: tkc.Calendar):
-            nonlocal temp_date
-            temp_date = cal.get_date()
-            date_win.destroy()
-
+        self.temp_date = ''
         date_win = tk.Toplevel(self)
         date_win.grab_set()
         date_win.title(title)
@@ -80,10 +78,9 @@ class FitnessHelper(App):
         day = int(datetime.datetime.today().strftime('%d'))
         cal = tkc.Calendar(date_win, selectmode="day", year=year, month=month, day=day, date_pattern='yyyy-mm-dd')
         cal.pack(pady=20)
-        ok_button = tk.Button(date_win, text="OK", command=lambda: update_date(date_win, cal))
+        ok_button = tk.Button(date_win, text="OK", command=lambda: self.update_date(date_win, cal))
         ok_button.pack(pady=20)
         date_win.wait_window()
-        return temp_date
 
     def switchCameraPage(self):
         if self.weight == -1:
@@ -112,7 +109,8 @@ class FitnessHelper(App):
             if filename == '':
                 return
             
-            self.video_page.date = self.pick_date("Pick Date for Video")
+            self.pick_date("Pick Date for Video")
+            self.video_page.date = self.temp_date
             if self.video_page.date == '':
                 return
             if datetime.datetime.strptime(self.video_page.date, '%Y-%m-%d') > datetime.datetime.today():
@@ -130,8 +128,10 @@ class FitnessHelper(App):
         self.camera_page.request_close_page()
 
         if not self.statistic_page.active:
-            self.statistic_page.start_date = self.pick_date("Pick Start Date for Statistic")
-            self.statistic_page.end_date = self.pick_date("Pick End Date for Statistic")
+            self.pick_date("Pick Start Date for Statistic")
+            self.statistic_page.start_date = self.temp_date
+            self.pick_date("Pick End Date for Statistic")
+            self.statistic_page.end_date = self.temp_date
         if self.statistic_page.start_date != '' and self.statistic_page.end_date != '':
             self.statistic_page.toggle_visible()
 
