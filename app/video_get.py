@@ -2,6 +2,7 @@ import cv2
 import time
 import threading
 import numpy as np
+import os
 
 from typing import List
 from .types import *
@@ -36,6 +37,7 @@ class VideoGet:
         self.currentframe = 0
         self.finished = False
         self.total_frame = -1
+        self.thread = None
 
     def start(self):
         self.thread = threading.Thread(target=self.get, daemon = True)
@@ -75,3 +77,6 @@ class VideoGet:
         self.stream = cv2.VideoCapture()
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        #if the os is Windows 
+        if os.name == 'nt' and self.thread != None:
+            self.thread.join()
