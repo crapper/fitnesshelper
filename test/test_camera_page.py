@@ -4,7 +4,7 @@ path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(path)
 
 import unittest
-from unittest.mock import patch,MagicMock
+from unittest.mock import patch
 import tkinter as tk
 from app import *
 import tkinter.messagebox as mb
