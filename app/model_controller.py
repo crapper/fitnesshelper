@@ -18,7 +18,11 @@ class ModelController:
         self.point_side = PointView.front
 
     def set_model(self, model_complexity, model_conf, track_conf):
-        self.model = self.pose.Pose(min_detection_confidence = model_conf, min_tracking_confidence = track_conf, model_complexity = model_complexity)
+        try:
+            self.model = self.pose.Pose(min_detection_confidence = model_conf, min_tracking_confidence = track_conf, model_complexity = model_complexity)
+            return True
+        except:
+            return False
 
     def init_frame(self):
         self.result = []
