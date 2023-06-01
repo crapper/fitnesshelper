@@ -53,7 +53,7 @@ class VideoPage(Page):
         self.save_btn: tk.Button = tk.Button(self.controller, image=self.pixel, text="Save", state='disable', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save())
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
         self.save_btn.place_forget()
-        self.date = ""
+        self.date = datetime.datetime.now().strftime("%Y-%m-%d")
         self.video_thread = None
         self.frame_read = 0
         self.offset_non_frame = []

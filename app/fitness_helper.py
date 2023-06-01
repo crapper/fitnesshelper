@@ -69,7 +69,6 @@ class FitnessHelper(App):
         date_win.destroy()
 
     def pick_date(self, title="Pick Date") -> str:
-        self.temp_date = ''
         date_win = tk.Toplevel(self)
         date_win.grab_set()
         date_win.title(title)
@@ -112,6 +111,7 @@ class FitnessHelper(App):
             self.pick_date("Pick Date for Video")
             self.video_page.date = self.temp_date
             if self.video_page.date == '':
+                print("No date picked")
                 return
             if datetime.datetime.strptime(self.video_page.date, '%Y-%m-%d') > datetime.datetime.today():
                 messagebox.showinfo('Warning', 'Please enter a date before today')
