@@ -13,8 +13,8 @@ from .page import *
 class VideoPage(Page):
     def __init__(self, parent: tk.Canvas, controller: App):
         Page.__init__(self, parent, controller)
-        self.model = ModelController()
-        self.panel = []
+        self.model: ModelController = ModelController()
+        self.panel: List[int] = []
         self.BgTop_x = 688
         self.BgTop_y = 188
         self.BgDown_x = 1088
@@ -22,11 +22,11 @@ class VideoPage(Page):
         self.shape_tri_pointer={'bounds': [1152, 224, self.BgDown_x, 192, self.BgDown_x, 256], 'kind': 'tri', 'fill': True}
         self.panel.append(self.parent.create_polygon(list(self.shape_tri_pointer.values())[0],fill='white',outline='green', width = 5))#[0] : widget background panel triangle
         self.panel.append(self.parent.create_rectangle(self.BgTop_x, self.BgTop_y,self.BgDown_x,self.BgDown_y,fill='white',outline='green', width = 5)) #[1] : widget background panel rectangle
-        self.db_connector = SQLconnector()
-        self.METlist = [3.8, 5.5, 8.0]
+        self.db_connector: SQLconnector = SQLconnector()
+        self.METlist: List[float] = [3.8, 5.5, 8.0]
         blank = np.full((int((self.BgDown_y-self.BgTop_y)*0.8/2), int((self.BgDown_x-self.BgTop_x)*0.8),3), 0, np.uint8)
-        self.img = Image.fromarray(blank)
-        self.img_tk = ImageTk.PhotoImage(image=self.img) 
+        self.img: Image = Image.fromarray(blank)
+        self.img_tk: ImageTk.PhotoImage = ImageTk.PhotoImage(image=self.img) 
         self.cam = self.parent.create_image(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1),self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1), image=self.img_tk, anchor=tk.NW)
         self.panel.append(self.cam) #[2] : widget camera image
         self.panel.append(self.parent.create_rectangle(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1),
@@ -35,22 +35,22 @@ class VideoPage(Page):
         ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05) ),
         fill='gray',outline='black')) #[3] : widget progress bar border
 
-        self.bar_fill = self.parent.create_rectangle( self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1)+1,
+        self.bar_fill: int = self.parent.create_rectangle( self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1)+1,
          ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) ) +1,
           self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1)-1,
           ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05)),
           fill='green') #final x = self.BgDown_x-11
 
-        self.total = int((self.BgDown_x-self.BgTop_x)*0.8)-2
+        self.total : int = int((self.BgDown_x-self.BgTop_x)*0.8)-2
         self.initial_x = self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1)+1
         self.panel.append(self.bar_fill) #[4] : widget progress bar fill, total 378 pixels
 
-        self.counter_list = [PushupCounter(), SquatCounter(), SitupCounter()]
+        self.counter_list: List[Counter] = [PushupCounter(), SquatCounter(), SitupCounter()]
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1), ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05) ), text="Pushup: "+str(self.counter_list[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[5] : widget text pushup counter
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) , ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05) )+16+16, text="Situp: "+str(self.counter_list[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[6] : widget text situp counter
         self.panel.append(self.parent.create_text(self.BgTop_x+int((self.BgDown_x-self.BgTop_x)*0.1) , ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.05) )+16+16+16+16, text="Squat: "+str(self.counter_list[Activity.pushup].get_count()), font=("Helvetica", 16), fill="black", anchor=tk.NW)) #[7] : widget text squat counter
         self.pixel = tk.PhotoImage(width=1, height=1)
-        self.save_btn = tk.Button(self.controller, image=self.pixel, text="Save", state='disable', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save())
+        self.save_btn: tk.Button = tk.Button(self.controller, image=self.pixel, text="Save", state='disable', width=int((self.BgDown_x-self.BgTop_x)*0.2), height =int((self.BgDown_y-self.BgTop_y)*0.1), compound='c', command=lambda: self.save())
         self.save_btn.place(x= self.BgDown_x - int((self.BgDown_x-self.BgTop_x)*0.3), y = ( self.BgTop_y+int((self.BgDown_y-self.BgTop_y)*0.1) + int((self.BgDown_y-self.BgTop_y)*0.8/2) +int((self.BgDown_y-self.BgTop_y)*0.1) )+16+16)
         self.save_btn.place_forget()
         self.date = ""

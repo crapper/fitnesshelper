@@ -13,17 +13,17 @@ from .page import *
 class CameraPage(Page):
     def __init__(self, parent: tk.Canvas, controller: App):
         Page.__init__(self, parent, controller)
-        self.model = ModelController()
+        self.model : ModelController = ModelController()
         w = int(self.controller.width * 0.9)
         h = self.controller.height
         blank = np.full((h, w,3), 0, np.uint8)
-        self.img = Image.fromarray(blank)
-        self.img_tk = ImageTk.PhotoImage(image=self.img) 
-        self.cam = parent.create_image(0,0, image=self.img_tk, anchor=tk.NW)
-        self.video_thread = VideoGet(0, 20)
+        self.img :Image = Image.fromarray(blank)
+        self.img_tk: ImageTk.PhotoImage = ImageTk.PhotoImage(image=self.img) 
+        self.cam: int = parent.create_image(0,0, image=self.img_tk, anchor=tk.NW)
+        self.video_thread: VideoGet = VideoGet(0, 20)
         self.counter_list: List[Counter] = [PushupCounter(), SitupCounter(), SquatCounter()]
-        self.db_connector = SQLconnector()
-        self.METlist = [3.8, 5.5, 8.0]
+        self.db_connector: SQLconnector = SQLconnector()
+        self.METlist: List[float] = [3.8, 5.5, 8.0]
         self.counter_list[0].peak_valley_count = 10
         self.counter_list[0].total_time = 100
         self.offset_non_frame: List[Activity] = []
