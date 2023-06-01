@@ -24,11 +24,15 @@ class CameraPage(Page):
         self.counter_list: List[Counter] = [PushupCounter(), SitupCounter(), SquatCounter()]
         self.db_connector: SQLconnector = SQLconnector()
         self.METlist: List[float] = [3.8, 5.5, 8.0]
-        self.counter_list[0].peak_valley_count = 10
-        self.counter_list[0].total_time = 100
         self.offset_non_frame: List[Activity] = []
 
         self.hide_page()
+
+    def save(self):
+        for p in range(len(self.counter_list)):
+            if self.counter_list[p].get_count() > 0:
+                MET = self.METlist[p] * 3.5 * self.controller.weight / 200 * self.counter_list[p].total_time / 60
+                self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time, MET)
 
     def show_page(self):
         self.model.set_model(self.controller.model_complexity, self.controller.model_conf, self.controller.track_conf)
@@ -40,6 +44,7 @@ class CameraPage(Page):
         self.active = False
 
         self.parent.itemconfig(self.cam, state='hidden')
+        self.stop_vid()
 
     def request_open_page(self):
         if self.active:
@@ -55,10 +60,7 @@ class CameraPage(Page):
         self.stop_vid()
         msg_box = tk.messagebox.askquestion('Warning', 'Are you save the counting to the database?(all progress will lost if no is selected)',icon='warning')
         if msg_box == 'yes':
-            for p in range(len(self.counter_list)):
-                if self.counter_list[p].get_count() > 0:
-                    MET = self.METlist[p] * 3.5 * self.controller.weight / 200 * self.counter_list[p].total_time / 60
-                    self.db_connector.save(self.counter_list[p].classname, self.counter_list[p].get_count(), self.controller.weight, self.counter_list[p].total_time, MET)
+            self.save()
         
         self.counter_list = [PushupCounter(), SitupCounter(), SquatCounter()]
         self.offset_non_frame = []
