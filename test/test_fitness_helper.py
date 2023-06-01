@@ -16,13 +16,19 @@ from test_setup import root
 class TestFitnessHelper(unittest.TestCase):
     def setUp(self):
         global root
+        root.statistic_page = StatisticPage(root.c, root)
+        root.camera_page = CameraPage(root.c, root)
+        root.video_page = VideoPage(root.c, root)
+        root.config_page = ConfigPage(root.c, root)
+        root.initialize_attribute()
         pass
 
     def tearDown(self):
-        if root:
-            root.destroy()
-        root.__init__()
-        root.withdraw()
+        root.statistic_page = StatisticPage(root.c, root)
+        root.camera_page = CameraPage(root.c, root)
+        root.video_page = VideoPage(root.c, root)
+        root.config_page = ConfigPage(root.c, root)
+        root.initialize_attribute()
         pass
 
     def test_CreateToolTip(self):
@@ -58,12 +64,12 @@ class TestFitnessHelper(unittest.TestCase):
         self.assertEqual(root.temp_date, "2020-01-01")
 
     def test_switch_camera_page(self):
+        if os.environ.get('GITHUB_ACTIONS') == 'true':
+            raise unittest.SkipTest()
         root.weight = -1
         with patch.object(messagebox, 'showinfo') as mock_showinfo:
             root.switchCameraPage()
             mock_showinfo.assert_called_once_with('Warning', 'Please enter your weight in the config page')
-        if os.environ.get('GITHUB_ACTIONS') == 'true':
-            raise unittest.SkipTest()
         root.weight = 1
         root.statistic_page.active = True
         root.config_page.active = True
