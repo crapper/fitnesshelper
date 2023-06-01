@@ -48,21 +48,27 @@ class FitnessHelper(App):
         self.btn3.place(x= self.start_x+button_len/2, y=button_len*5)
         self.btn4 = tk.Button(self, image=self.pixel, width=64, height=64, command=lambda: self.switchStatisticPage(), state=tk.NORMAL)
         self.btn4.place(x= self.start_x+button_len/2, y=button_len*7)
-        self.CreateToolTip(self.btn1, text = "Camera Page Switch\n" "Cannot be used when:\n" "Weight is not initialize in config.")
-        self.CreateToolTip(self.btn2, text = "Video Page Switch\n" "Cannot be used when:\n" "Weight is not initialize in config.")
-        self.CreateToolTip(self.btn3, text = "Config Page Switch\n" "Cannot be used when:\n" "Camera/Video page is active.")
-        self.CreateToolTip(self.btn4, text = "Statistic Page Switch\n" "Cannot be used when:\n" "Video page is active.")
+        self.create_hover_tip(self.btn1, text = "Camera Page Switch\n" "Cannot be used when:\n" "Weight is not initialize in config.")
+        self.create_hover_tip(self.btn2, text = "Video Page Switch\n" "Cannot be used when:\n" "Weight is not initialize in config.")
+        self.create_hover_tip(self.btn3, text = "Config Page Switch\n" "Cannot be used when:\n" "Camera/Video page is active.")
+        self.create_hover_tip(self.btn4, text = "Statistic Page Switch\n" "Cannot be used when:\n" "Video page is active.")
         self.update_frame()
         self.protocol("WM_DELETE_WINDOW", self.before_destroy)
+        self.tips: TipWindow = None
 
-    def CreateToolTip(self, widget, text):
-        toolTip = TipWindow(widget)
-        def enter(event):
-            toolTip.showtip(text)
-        def leave(event):
-            toolTip.hidetip()
-        widget.bind('<Enter>', enter)
-        widget.bind('<Leave>', leave)
+    def enter(self, widget, text):
+        self.leave()
+        self.tips = TipWindow(widget)
+        self.tips.showtip(text)
+
+    def leave(self):
+        if self.tips != None:
+            self.tips.hidetip()
+            self.tips = None
+
+    def create_hover_tip(self, widget, text):
+        widget.bind('<Enter>',lambda event, widget=widget, text=text: self.enter(widget, text))
+        widget.bind('<Leave>',lambda event: self.leave())
 
     def update_date(self, date_win: tk.Toplevel, cal: tkc.Calendar):
         self.temp_date = cal.get_date()
