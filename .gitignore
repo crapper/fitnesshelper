@@ -3,3 +3,4 @@ cleaner.sh
 .coverage
 htmlcov
 report_generator.sh
+Counter.db
