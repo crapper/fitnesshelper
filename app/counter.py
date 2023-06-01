@@ -2,6 +2,7 @@ from .types import *
 
 class Counter:
     def __init__(self):
+        self.classname = ""
         self.peak_valley_count = 0
         self.state = ActivityType.NA
         self.temp_count_time = 0
