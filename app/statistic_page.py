@@ -19,8 +19,8 @@ class StatisticPage(Page):
         self.img_tk = ImageTk.PhotoImage(image=self.img)
         self.cam = parent.create_image(0,0, image=self.img_tk, anchor=tk.NW)
         self.db_connector = SQLconnector()
-        self.start_date = ""
-        self.end_date = ""
+        self.start_date = datetime.datetime.now().strftime("%Y-%m-%d")
+        self.end_date = datetime.datetime.now().strftime("%Y-%m-%d")
         self.plot_graph_list = [None, None, None, None]
         self.state = 0
         self.left_btn = tk.Button(self.controller, text="<", command=lambda: self.change_state(-1))
