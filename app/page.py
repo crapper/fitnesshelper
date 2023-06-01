@@ -1,5 +1,5 @@
 import tkinter as tk
-
+from .tips_window import *
 
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -14,12 +14,18 @@ class App(tk.Tk):
 
         self.width = 1280
         self.height = 720
+        self.initialize_attribute()
+    
+    def initialize_attribute(self):
         self.weight = -1 # weight for calories calculation
         self.model_complexity = 1
         self.model_conf = 0.5
         self.track_conf = 0.5
         self.statistic_unit = 0
         self.temp_date = ""
+        self.expect_frame = 20
+        self.after_keeper = None
+        self.tips: TipWindow = None
 
 class Page(tk.Frame):
     def __init__(self, parent: tk.Canvas, controller: App) -> None:

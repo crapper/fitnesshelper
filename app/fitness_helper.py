@@ -21,8 +21,6 @@ class FitnessHelper(App):
         
         self.c = tk.Canvas(self, width=self.width, height=self.height, bg = 'black')
         self.c.pack()
-        self.expect_frame = 20
-        self.after_keeper = None
 
         # Create a dictionary of frames
         self.statistic_page = StatisticPage(self.c, self)
@@ -54,7 +52,6 @@ class FitnessHelper(App):
         self.create_hover_tip(self.btn4, text = "Statistic Page Switch\n" "Cannot be used when:\n" "Video page is active.")
         self.update_frame()
         self.protocol("WM_DELETE_WINDOW", self.before_destroy)
-        self.tips: TipWindow = None
 
     def enter(self, widget, text):
         self.leave()
