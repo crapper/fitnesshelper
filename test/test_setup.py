@@ -1,3 +1,3 @@
 from app import *
-root = App()
+root = FitnessHelper()
 root.withdraw()
