@@ -2,3 +2,4 @@ __pycache__
 cleaner.sh
 .coverage
 htmlcov
+report_generator.sh
