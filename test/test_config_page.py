@@ -61,7 +61,7 @@ class TestConfigPage(unittest.TestCase):
 
     def test_enter_leave(self):
         self.assertIsNone(self.config_page.tips)
-        self.config_page.Update_Model_Track_Tip(tk.Button(self.c), "test")
+        self.config_page.create_update_tip(tk.Button(self.c), "test")
         self.assertIsNotNone(self.config_page.tips)
         self.assertEqual(self.config_page.tips.text, "test")
         self.config_page.leave()
@@ -69,7 +69,7 @@ class TestConfigPage(unittest.TestCase):
         floatvar = tk.DoubleVar()
         floatvar.set(0.5)
         testentry = tk.Entry(self.c, textvariable=floatvar)
-        self.config_page.Update_Model_Track_Tip(testentry, "test")
+        self.config_page.create_update_tip(testentry, "test")
         self.assertIsNotNone(self.config_page.tips)
         self.assertEqual(self.config_page.tips.text, "test0.5")
         self.config_page.leave()
