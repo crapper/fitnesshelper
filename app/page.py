@@ -19,6 +19,7 @@ class App(tk.Tk):
         self.model_conf = 0.5
         self.track_conf = 0.5
         self.statistic_unit = 0
+        self.temp_date = ""
 
 class Page(tk.Frame):
     def __init__(self, parent: tk.Canvas, controller: App) -> None:
