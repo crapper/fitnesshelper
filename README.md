@@ -7,3 +7,5 @@ A python-written fitness activity counter provide the follow features
 2. Provide the saving the calories spent on the activities by estimated calories spent using the MET formula
 
 3. Showing the trend for calories by plotting the saved data in the sqlite table
+
+[![codecov](https://codecov.io/github/crapper/fitnesshelper/branch/main/graph/badge.svg?token=ONCSG83GQW)](https://codecov.io/github/crapper/fitnesshelper)
