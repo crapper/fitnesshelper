@@ -31,7 +31,7 @@ class TestFitnessHelper(unittest.TestCase):
         root.initialize_attribute()
         pass
 
-    def test_CreateToolTip(self):
+    def test_create_hover_tip(self):
         def has_binding(widget, event):
             for tag in widget.bindtags():
                 if widget.bind_class(tag, event):
