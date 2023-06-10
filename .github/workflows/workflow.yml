@@ -17,10 +17,12 @@ jobs:
         sudo add-apt-repository ppa:obsproject/obs-studio
         sudo apt-get update
         sudo apt-get install -y obs-studio
-  
-    - name: Preset Blank Image
+
+    - name: Start OBS Studio
       run: |
-        manycam-cli --start --preset "Blank Image"
+        obs --new-scene "Blank"
+        obs --add-source "Image" --scene "Blank" --source-name "frontface" --file-path "/frontface.jpg"
+        obs --startvirtualcam --virtualcam-pixel-format yuy2 --virtualcam-width 1280 --virtualcam-height 720 --virtualcam-fps 30 --scene "Blank"
 
     - name: Setup headless display
       uses: pyvista/setup-headless-display-action@v1
