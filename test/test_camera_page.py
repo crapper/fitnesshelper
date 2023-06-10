@@ -23,31 +23,34 @@ class TestCameraPage(unittest.TestCase):
         pass
 
     def test_show_page(self):
-        if os.environ.get('GITHUB_ACTIONS') == 'true':
-            raise unittest.SkipTest()
+        print("test_show_page")
+        # if os.environ.get('GITHUB_ACTIONS') == 'true':
+        #     raise unittest.SkipTest()
         self.assertFalse(self.camera_page.active)
         self.camera_page.show_page()
         self.assertTrue(self.camera_page.active)
 
     def test_hide_page(self):
-        if os.environ.get('GITHUB_ACTIONS') == 'true':
-            raise unittest.SkipTest()
+        print("test_hide_page")
+        # if os.environ.get('GITHUB_ACTIONS') == 'true':
+        #     raise unittest.SkipTest()
         self.camera_page.show_page()
         self.assertTrue(self.camera_page.active)
         self.camera_page.hide_page()
         self.assertFalse(self.camera_page.active)
 
     def test_request_open_page(self):
-        if os.environ.get('GITHUB_ACTIONS') == 'true':
-            raise unittest.SkipTest()
+        # if os.environ.get('GITHUB_ACTIONS') == 'true':
+        #     raise unittest.SkipTest()
         self.assertFalse(self.camera_page.active)
         self.camera_page.request_open_page()
         self.assertTrue(self.camera_page.active)
         self.assertTrue(self.camera_page.request_open_page())
     
     def test_request_close_page(self):
-        if os.environ.get('GITHUB_ACTIONS') == 'true':
-            raise unittest.SkipTest()
+        print("test_request_close_page")
+        # if os.environ.get('GITHUB_ACTIONS') == 'true':
+        #     raise unittest.SkipTest()
         def mock_askquestion(title, message, **options):
             return 'yes'
         self.camera_page.show_page()
@@ -59,8 +62,9 @@ class TestCameraPage(unittest.TestCase):
             self.assertTrue(self.camera_page.request_close_page())
 
     def test_save(self):
-        if os.environ.get('GITHUB_ACTIONS') == 'true':
-            raise unittest.SkipTest()
+        print("test_save")
+        # if os.environ.get('GITHUB_ACTIONS') == 'true':
+        #     raise unittest.SkipTest()
         if os.path.exists(self.camera_page.db_connector.db_path):
             os.remove(self.camera_page.db_connector.db_path)
         date = datetime.datetime.now().date().strftime('%Y-%m-%d')
@@ -89,8 +93,9 @@ class TestCameraPage(unittest.TestCase):
         self.assertEqual(row[5], MET)
     
     def test_update_frame(self):
-        if os.environ.get('GITHUB_ACTIONS') == 'true':
-            raise unittest.SkipTest()
+        print("test_update_frame")
+        # if os.environ.get('GITHUB_ACTIONS') == 'true':
+        #     raise unittest.SkipTest()
         class MockVideoGet(VideoGet):
             def __init__(self, src=0, fps=30):
                 super().__init__(src, fps)

@@ -10,6 +10,18 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Install OBS Studio
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg v4l-utils
+        sudo add-apt-repository ppa:obsproject/obs-studio
+        sudo apt-get update
+        sudo apt-get install -y obs-studio
+  
+    - name: Preset Blank Image
+      run: |
+        manycam-cli --start --preset "Blank Image"
+
     - name: Setup headless display
       uses: pyvista/setup-headless-display-action@v1
 
@@ -22,7 +34,7 @@ jobs:
       run: |
         pip install coverage
         pip install -r requirements.txt
-        coverage run --omit 'test/test_video_get.py' -m unittest discover test
+        coverage run -m unittest discover test
         coverage xml -i
         
     - name: Upload coverage to Codecov
@@ -33,3 +45,7 @@ jobs:
         files: ./coverage.xml
         flags: unittests
         verbose: true
+
+    - name: Stop OBS Studio
+      run: |
+        killall obs
