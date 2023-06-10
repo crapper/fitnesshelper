@@ -7,6 +7,7 @@ import datetime
 import math
 import time
 import numpy as np
+import cv2
 
 from .page import *
 from .camera_page import *
@@ -89,6 +90,12 @@ class FitnessHelper(App):
             messagebox.showinfo('Warning', 'Please enter your weight in the config page')
             return
         
+        cap = cv2.VideoCapture(0)
+        if cap.isOpened() == False:
+            messagebox.showinfo('Warning', 'Cannot open camera')
+            return
+        cap.release()
+
         self.statistic_page.request_close_page()
         self.config_page.request_close_page()
 
