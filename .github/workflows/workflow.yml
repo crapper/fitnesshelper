@@ -10,20 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install OBS Studio
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ffmpeg v4l-utils
-        sudo add-apt-repository ppa:obsproject/obs-studio
-        sudo apt-get update
-        sudo apt-get install -y obs-studio
-
-    - name: Start OBS Studio
-      run: |
-        obs --new-scene "Blank"
-        obs --add-source "Image" --scene "Blank" --source-name "frontface" --file-path "/frontface.jpg"
-        obs --startvirtualcam --virtualcam-pixel-format yuy2 --virtualcam-width 1280 --virtualcam-height 720 --virtualcam-fps 30 --scene "Blank"
-
     - name: Setup headless display
       uses: pyvista/setup-headless-display-action@v1
 
@@ -47,7 +33,3 @@ jobs:
         files: ./coverage.xml
         flags: unittests
         verbose: true
-
-    - name: Stop OBS Studio
-      run: |
-        killall obs
