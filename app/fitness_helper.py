@@ -89,17 +89,13 @@ class FitnessHelper(App):
         if self.weight == -1:
             messagebox.showinfo('Warning', 'Please enter your weight in the config page')
             return
-        
+
         cap = cv2.VideoCapture(0)
-        if cap.isOpened() == False:
-            messagebox.showinfo('Warning', 'Cannot open camera')
-            return
-        cap.release()
-
-        self.statistic_page.request_close_page()
-        self.config_page.request_close_page()
-
-        self.camera_page.toggle_visible()
+        if cap.isOpened() == True:
+            cap.release()
+            self.statistic_page.request_close_page()
+            self.config_page.request_close_page()
+            self.camera_page.toggle_visible()
 
     def switchVideoPage(self):
         if self.weight == -1:
