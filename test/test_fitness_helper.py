@@ -134,6 +134,7 @@ class TestFitnessHelper(unittest.TestCase):
         def mock_askquestion(title, message, **options):
             return 'no'
         root.video_page.active = True
+        root.pick_date = MagicMock()
         root.switchStatisticPage() # should not switch when video page is active
         self.assertFalse(root.statistic_page.active)
         root.video_page.active = False
