@@ -75,6 +75,7 @@ class FitnessHelper(App):
     def pick_date(self, title="Pick Date") -> str:
         self.temp_date = ""
         date_win = tk.Toplevel(self)
+        date_win.resizable(0,0)
         date_win.grab_set()
         date_win.title(title)
         year = int(datetime.datetime.today().strftime('%Y'))
